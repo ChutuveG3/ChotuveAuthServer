@@ -31,7 +31,7 @@ exports.createUserSchema = {
   },
   birthdate: {
     in: ['body'],
-    isDate: true,
+    isISO8601: true,
     optional: false,
     errorMessage: 'birthdate should be a valid date'
   }
