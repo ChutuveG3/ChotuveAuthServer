@@ -7,7 +7,6 @@ exports.createUser = userData => {
   info(`Creating user with data: ${userData}`);
   return User.findOne({ [Op.or]: [{ userName: userData.userName }, { email: userData.email }] })
     .catch(dbError => {
-      console.log('acaaaaaaaaaaaa');
       error(`User could not be created. Error: ${dbError}`);
       throw databaseError(`User could not be created. Error: ${dbError}`);
     })
