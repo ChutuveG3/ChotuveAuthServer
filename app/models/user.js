@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       userName: { type: DataTypes.STRING, allowNull: false, unique: true },
       birthdate: { type: DataTypes.DATEONLY, allowNull: false }
     },
-    { underscored: true, paranoid: true, tableName: 'users' }
+    { underscored: true, tableName: 'users' }
   );
   return User;
 };
