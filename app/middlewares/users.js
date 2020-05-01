@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 exports.createUserSchema = {
   first_name: {
     in: ['body'],
@@ -31,7 +33,9 @@ exports.createUserSchema = {
   },
   birthdate: {
     in: ['body'],
-    isISO8601: true,
+    custom: {
+      options: birthdate => moment(birthdate, 'YYYY-MM-DD', true).isValid() === true
+    },
     optional: false,
     errorMessage: 'birthdate should be a valid date'
   }

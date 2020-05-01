@@ -20,7 +20,8 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNill: false
+        allowNull: false,
+        unique: true
       },
       password: {
         type: Sequelize.STRING,
@@ -29,7 +30,8 @@ module.exports = {
       userName: {
         type: Sequelize.STRING,
         allowNull: false,
-        field: 'user_name'
+        field: 'user_name',
+        unique: true
       },
       birthdate: {
         type: Sequelize.DATE,
@@ -41,7 +43,7 @@ module.exports = {
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       }
     }),
   down: queryInterface => queryInterface.dropTable('users')

@@ -8,7 +8,7 @@ const userData = {
   email: 'prueba@prueba.prueba',
   password: 'pass',
   user_name: 'un',
-  birthdate: '20200301T000000Z'
+  birthdate: '2020-05-03'
 };
 
 const userDataMissingParam = {
@@ -16,7 +16,7 @@ const userDataMissingParam = {
   email: 'prueba@prueba.prueba',
   password: 'pass',
   user_name: 'un',
-  birthdate: '20200301T000000Z'
+  birthdate: '2020-05-03'
 };
 
 describe('POST /users', () => {
@@ -32,11 +32,13 @@ describe('POST /users', () => {
       }));
 
     it('Invalid date, check status code', () =>
-      getResponse({ method: 'post', endpoint: baseUrl, body: { ...userData, birthdate: '2020/03/01' } }).then(
-        res => {
-          expect(res.status).toBe(400);
-        }
-      ));
+      getResponse({
+        method: 'post',
+        endpoint: baseUrl,
+        body: { ...userData, birthdate: 'invalid birthdate' }
+      }).then(res => {
+        expect(res.status).toBe(400);
+      }));
 
     it('Invalid email, check status code', () =>
       getResponse({ method: 'post', endpoint: baseUrl, body: { ...userData, email: 'invalid email' } }).then(
