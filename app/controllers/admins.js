@@ -1,6 +1,6 @@
 const { info } = require('../logger');
 const { createAdminMapper } = require('../mappers/admins');
-const { createAdmin } = require('../models/admin');
+const { createAdmin } = require('../services/admins');
 
 exports.signUpAdmin = ({ body }, res, next) => {
   info(`Creating admin with info: ${body}`);
