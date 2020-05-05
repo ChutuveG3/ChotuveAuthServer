@@ -31,4 +31,5 @@ script:
 deploy:
   provider: script
   script: docker push chotuveg3/auth-server-develop;
-  branch: docker
+  on:
+    branch: docker
