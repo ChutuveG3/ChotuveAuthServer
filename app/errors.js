@@ -17,3 +17,10 @@ exports.userNameAlreadyExists = message => internalError(message, exports.USER_N
 
 exports.USER_EMAIL_ALREADY_EXISTS = 'user_email_already_exists';
 exports.userEmailAlreadyExists = message => internalError(message, exports.USER_EMAIL_ALREADY_EXISTS);
+
+exports.ADMIN_USER_NAME_ALREADY_EXISTS = 'admin_user_name_already_exists';
+exports.adminUserNameAlreadyExists = message =>
+  internalError(message, exports.ADMIN_USER_NAME_ALREADY_EXISTS);
+
+exports.ADMIN_EMAIL_ALREADY_EXISTS = 'admin_email_already_exists';
+exports.adminEmailAlreadyExists = message => internalError(message, exports.ADMIN_EMAIL_ALREADY_EXISTS);

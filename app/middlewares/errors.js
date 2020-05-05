@@ -8,7 +8,9 @@ const statusCodes = {
   [errors.DEFAULT_ERROR]: 500,
   [errors.INVALID_PARAMS]: 400,
   [errors.USER_EMAIL_ALREADY_EXISTS]: 400,
-  [errors.USER_NAME_ALREADY_EXISTS]: 400
+  [errors.USER_NAME_ALREADY_EXISTS]: 400,
+  [errors.ADMIN_EMAIL_ALREADY_EXISTS]: 400,
+  [errors.ADMIN_USER_NAME_ALREADY_EXISTS]: 400
 };
 
 exports.handle = (error, req, res, next) => {
