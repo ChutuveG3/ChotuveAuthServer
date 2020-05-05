@@ -19,7 +19,9 @@ services:
   - docker
 
 before_install:
+  - wget -q0- https://toolbelt.heroku.com/install.sh | sh
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
 
 before_script:
   - psql -c "CREATE DATABASE authserver;" -U postgres
@@ -27,9 +29,13 @@ before_script:
 
 script:
   - docker build -t chotuveg3/auth-server-develop .
+  - docker tag chotuve/auth-server-develop registry.heroku.com/$HEROKU_APP_NAME/web
 
 deploy:
   provider: script
-  script: docker push chotuveg3/auth-server-develop;
+  script:
+    docker push chotuveg3/auth-server-develop;
+    docker push registry.heroku.com/$HEROKU_APP_NAME/web;
+    heroku container:release web --app $HEROKU_APP_NAME
   on:
     branch: docker
