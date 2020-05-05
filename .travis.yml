@@ -26,9 +26,9 @@ before_script:
   - npm run migrations-test
 
 script:
-  - docker build -t chotuveg3/auth-server .
+  - docker build -t chotuveg3/auth-server-develop .
 
 deploy:
   provider: script
-  script: docker push chotuveg3/auth-server;
+  script: docker push chotuveg3/auth-server-develop;
   branch: docker
