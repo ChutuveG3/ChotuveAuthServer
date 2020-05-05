@@ -16,7 +16,19 @@ addons:
 
 services:
   - postgresql
+  - docker
+
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --pasword-stdin
 
 before_script:
-  - psql -c "CREATE DATABASE bookstest;" -U postgres
+  - psql -c "CREATE DATABASE authserver;" -U postgres
   - npm run migrations-test
+
+script:
+  - docker build -t chotuveg3/auth-server .
+
+deploy:
+  provider: script
+  script: docker push chotuveg3/auth-server;
+  branch: docker
