@@ -29,7 +29,7 @@ before_script:
 
 script:
   - docker build -t chotuveg3/auth-server-develop .
-  - docker tag chotuve/auth-server-develop registry.heroku.com/$HEROKU_APP_NAME/web
+  - docker tag chotuveg3/auth-server-develop registry.heroku.com/$HEROKU_APP_NAME/web
 
 deploy:
   provider: script
