@@ -1,9 +1,15 @@
 exports.createAdminSchema = {
-  user_name: {
+  first_name: {
     in: ['body'],
     isString: true,
     optional: false,
-    errorMessage: 'userName should be a string'
+    errorMessage: 'firstName should be a string'
+  },
+  last_name: {
+    in: ['body'],
+    isString: true,
+    optional: false,
+    errorMessage: 'lastName should be a string'
   },
   email: {
     in: ['body'],
