@@ -16,9 +16,9 @@ module.exports = {
     ]),
   down: (queryInterface, Sequelize) =>
     Promise.all([
-      queryInterface.removeColumn('admins', 'firstName'),
-      queryInterface.removeColumn('admins', 'lastName'),
-      queryInterface.addColumn('admins', 'userName', {
+      queryInterface.removeColumn('admins', 'first_name'),
+      queryInterface.removeColumn('admins', 'last_name'),
+      queryInterface.addColumn('admins', 'user_name', {
         type: Sequelize.STRING,
         allowNull: false,
         field: 'user_name',
