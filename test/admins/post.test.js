@@ -107,25 +107,5 @@ describe('POST /admins', () => {
           }
         ));
     });
-
-    /*    describe('Create admin with repeated username', () => {
-      it('Check status code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...adminData, user_name: admin.userName }
-        }).then(res => {
-          expect(res.status).toBe(400);
-        }));
-
-      it('Check internal code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...adminData, user_name: admin.userName }
-        }).then(res => {
-          expect(res.body.internal_code).toBe('admin_user_name_already_exists');
-        }));
-    });*/
   });
 });
