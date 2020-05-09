@@ -20,6 +20,7 @@ exports.createAdminSchema = {
   password: {
     in: ['body'],
     isString: true,
+    isLength: { errorMessage: 'Password should have at least 6 characters', options: { min: 6 } },
     optional: false,
     errorMessage: 'password should be a string'
   }
