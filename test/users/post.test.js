@@ -7,7 +7,7 @@ const userData = {
   first_name: 'fn',
   last_name: 'ln',
   email: 'prueba@prueba.prueba',
-  password: 'pass',
+  password: 'pass123',
   user_name: 'un',
   birthdate: '2020-05-03'
 };
@@ -15,7 +15,7 @@ const userData = {
 const userDataMissingParam = {
   last_name: 'ln',
   email: 'prueba@prueba.prueba',
-  password: 'pass',
+  password: 'pass123',
   user_name: 'un',
   birthdate: '2020-05-03'
 };

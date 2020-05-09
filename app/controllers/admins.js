@@ -7,9 +7,7 @@ exports.signUpAdmin = ({ body }, res, next) => {
   info(`Creating admin with info: ${body}`);
   const adminData = createAdminMapper(body);
   return encryptPassword(adminData.password)
-    .then(password => {
-      createAdmin({ ...adminData, password });
-    })
+    .then(password => createAdmin({ ...adminData, password }))
     .then(() => {
       res.status(201).end();
     })
