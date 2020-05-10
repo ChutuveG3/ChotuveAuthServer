@@ -81,6 +81,18 @@ describe('POST /admins', () => {
           expect(res.body.internal_code).toBe('invalid_params');
         }));
     });
+
+    describe('Invalid password: Length less than 6 charcaters', () => {
+      it('Check status code', () =>
+        getResponse({
+          method: 'post',
+          endpoint: baseUrl,
+          body: { ...adminData, password: 'aaaa' }
+        }).then(res => {
+          expect(res.status).toBe(400);
+          expect(res.body.internal_code).toBe('invalid_params');
+        }));
+    });
   });
 
   describe('Admin created', () => {
