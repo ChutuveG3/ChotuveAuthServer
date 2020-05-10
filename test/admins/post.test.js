@@ -7,7 +7,7 @@ const adminData = {
   first_name: 'fn',
   last_name: 'ln',
   email: 'prueba@prueba.prueba',
-  password: 'pass'
+  password: 'pass123'
 };
 
 describe('POST /admins', () => {
@@ -16,7 +16,7 @@ describe('POST /admins', () => {
       it('Should set status code to 400 and internal code to invalid_params if missing first_name', () => {
         const currentAdminData = { ...adminData };
         delete currentAdminData.first_name;
-        getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
+        return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
           expect(res.body.internal_code).toBe('invalid_params');
         });
@@ -25,7 +25,7 @@ describe('POST /admins', () => {
       it('Should set status code to 400 and internal code to invalid_params if missing last_name', () => {
         const currentAdminData = { ...adminData };
         delete currentAdminData.last_name;
-        getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
+        return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
           expect(res.body.internal_code).toBe('invalid_params');
         });
@@ -34,7 +34,7 @@ describe('POST /admins', () => {
       it('Should set status code to 400 and internal code to invalid_params if missing email', () => {
         const currentAdminData = { ...adminData };
         delete currentAdminData.email;
-        getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
+        return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
           expect(res.body.internal_code).toBe('invalid_params');
         });
@@ -43,7 +43,7 @@ describe('POST /admins', () => {
       it('Should set status code to 400 and internal code to invalid_params if missing password', () => {
         const currentAdminData = { ...adminData };
         delete currentAdminData.password;
-        getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
+        return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
           expect(res.body.internal_code).toBe('invalid_params');
         });
@@ -76,6 +76,18 @@ describe('POST /admins', () => {
           method: 'post',
           endpoint: baseUrl,
           body: { ...adminData, first_name: 5 }
+        }).then(res => {
+          expect(res.status).toBe(400);
+          expect(res.body.internal_code).toBe('invalid_params');
+        }));
+    });
+
+    describe('Invalid password: Length less than 6 charcaters', () => {
+      it('Check status code', () =>
+        getResponse({
+          method: 'post',
+          endpoint: baseUrl,
+          body: { ...adminData, password: 'aaaa' }
         }).then(res => {
           expect(res.status).toBe(400);
           expect(res.body.internal_code).toBe('invalid_params');

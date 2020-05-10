@@ -7,7 +7,7 @@ const userData = {
   first_name: 'fn',
   last_name: 'ln',
   email: 'prueba@prueba.prueba',
-  password: 'pass',
+  password: 'pass123',
   user_name: 'un',
   birthdate: '2020-05-03'
 };
@@ -15,7 +15,7 @@ const userData = {
 const userDataMissingParam = {
   last_name: 'ln',
   email: 'prueba@prueba.prueba',
-  password: 'pass',
+  password: 'pass123',
   user_name: 'un',
   birthdate: '2020-05-03'
 };
@@ -101,6 +101,18 @@ describe('POST /users', () => {
           endpoint: baseUrl,
           body: { ...userData, user_name: 5 }
         }).then(res => {
+          expect(res.body.internal_code).toBe('invalid_params');
+        }));
+    });
+
+    describe('Invalid password: Length less than 6 charcaters', () => {
+      it('Check status code', () =>
+        getResponse({
+          method: 'post',
+          endpoint: baseUrl,
+          body: { ...userData, password: 'aaaa' }
+        }).then(res => {
+          expect(res.status).toBe(400);
           expect(res.body.internal_code).toBe('invalid_params');
         }));
     });

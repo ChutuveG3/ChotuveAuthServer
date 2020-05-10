@@ -20,3 +20,6 @@ exports.userEmailAlreadyExists = message => internalError(message, exports.USER_
 
 exports.ADMIN_EMAIL_ALREADY_EXISTS = 'admin_email_already_exists';
 exports.adminEmailAlreadyExists = message => internalError(message, exports.ADMIN_EMAIL_ALREADY_EXISTS);
+
+exports.EXTERNAL_ERROR = 'external_error';
+exports.externalError = message => internalError(message, exports.EXTERNAL_ERROR);

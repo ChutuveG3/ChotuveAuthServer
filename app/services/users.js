@@ -4,7 +4,7 @@ const { info, error } = require('../logger');
 const { databaseError, userEmailAlreadyExists, userNameAlreadyExists } = require('../errors');
 
 exports.createUser = userData => {
-  info(`Creating user with data: ${userData}`);
+  info(`Creating user in db with email: ${userData.email}`);
   return User.findOne({ where: { [Op.or]: [{ userName: userData.userName }, { email: userData.email }] } })
     .catch(dbError => {
       error(`User could not be created. Error: ${dbError}`);
