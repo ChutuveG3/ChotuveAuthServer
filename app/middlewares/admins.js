@@ -1,4 +1,4 @@
-const { adminNotExists, passwordMissmatch } = require('../errors');
+const { passwordMissmatch } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { getAdminFromEmail } = require('../services/admins');
 
@@ -48,10 +48,7 @@ exports.createAdminSessionSchema = {
 
 exports.checkAdmin = ({ body }, res, next) =>
   getAdminFromEmail(body.email)
-    .then(admin => {
-      if (!admin) throw adminNotExists('Admin with that email does not exist');
-      return checkPassword(body.password, admin.password);
-    })
+    .then(admin => checkPassword(body.password, admin.password))
     .then(compareResult => {
       if (compareResult) return next();
       throw passwordMissmatch('Password does not match with that email');

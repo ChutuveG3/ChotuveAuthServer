@@ -1,6 +1,6 @@
 const { Admin } = require('../models');
 const { info, error } = require('../logger');
-const { databaseError, adminEmailAlreadyExists, jwtError } = require('../errors');
+const { databaseError, adminEmailAlreadyExists, jwtError, adminNotExists } = require('../errors');
 const { generateTokenFromEmail } = require('../services/jwt');
 
 exports.createAdmin = adminData => {
@@ -23,10 +23,15 @@ exports.createAdmin = adminData => {
 
 exports.getAdminFromEmail = email => {
   info(`Getting admin with email: ${email}`);
-  return Admin.findOne({ where: { email } }).catch(dbError => {
-    error(`Could not get admin. Error: ${dbError}`);
-    throw databaseError(`Could not get admin. Error: ${dbError}`);
-  });
+  return Admin.findOne({ where: { email } })
+    .catch(dbError => {
+      error(`Could not get admin. Error: ${dbError}`);
+      throw databaseError(`Could not get admin. Error: ${dbError}`);
+    })
+    .then(admin => {
+      if (!admin) throw adminNotExists('Admin with that email does not exist');
+      return admin;
+    });
 };
 
 exports.loginAdmin = adminData => {
