@@ -32,3 +32,6 @@ exports.userNotExists = message => internalError(message, exports.USER_NOT_EXIST
 
 exports.PASSWORD_MISSMATCH = 'password_missmatch';
 exports.passwordMissmatch = message => internalError(message, exports.PASSWORD_MISSMATCH);
+
+exports.ADMIN_NOT_EXISTS = 'admin_not_exists';
+exports.adminNotExists = message => internalError(message, exports.ADMIN_NOT_EXISTS);

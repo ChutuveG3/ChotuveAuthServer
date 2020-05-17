@@ -45,7 +45,7 @@ exports.createUserSchema = {
   }
 };
 
-exports.createUserSession = {
+exports.createUserSessionSchema = {
   email: {
     in: ['body'],
     isEmail: true,
@@ -62,7 +62,6 @@ exports.createUserSession = {
 };
 
 exports.checkUser = ({ body }, res, next) =>
-  // chequear que está en la db y que coincida la pass
   getUserFromEmail(body.email)
     .then(user => {
       if (!user) throw userNotExists('User with that email does not exist');
