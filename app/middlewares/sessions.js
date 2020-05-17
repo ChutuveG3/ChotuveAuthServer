@@ -9,3 +9,11 @@ exports.validateTokenAndLoadEmail = (req, res, next) => {
     return next(error);
   }
 };
+
+exports.authorizationSchema = {
+  authorization: {
+    in: ['headers'],
+    isString: true,
+    errorMessage: 'authorization should be a string and be present in headers'
+  }
+};

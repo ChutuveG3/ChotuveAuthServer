@@ -1,7 +1,8 @@
 const moment = require('moment');
 const { getUserFromEmail } = require('../services/users');
-const { userNotExists, passwordMissmatch } = require('../errors');
+const { passwordMissmatch } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
+const { authorizationSchema } = require('./sessions');
 
 exports.createUserSchema = {
   first_name: {
@@ -71,9 +72,5 @@ exports.checkUser = ({ body }, res, next) =>
     .catch(next);
 
 exports.getCurrentUserSchema = {
-  authorization: {
-    in: ['headers'],
-    isString: true,
-    errorMessage: 'authorization should be a string and be present in headers'
-  }
+  ...authorizationSchema
 };
