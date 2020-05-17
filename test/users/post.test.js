@@ -225,21 +225,13 @@ describe('POST /users/sessions', () => {
       ));
   });
   describe('User does not exists', () => {
-    test('Check status code', () =>
+    test('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
         body: { email: 'noexiste@noexiste.noexiste', password: 'noexiste' }
       }).then(response => {
         expect(response.status).toBe(409);
-      }));
-
-    test('Check internal code', () =>
-      getResponse({
-        endpoint: sessionsUrl,
-        method: 'post',
-        body: { email: 'noexiste@noexiste.noexiste', password: 'noexiste' }
-      }).then(response => {
         expect(response.body.internal_code).toBe('user_not_exists');
       }));
   });
@@ -251,21 +243,13 @@ describe('POST /users/sessions', () => {
         .then(createdUser => (user = createdUser))
     );
 
-    test('Check status code', () =>
+    test('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
         body: { email: user.email, password: `${user.password}a` }
       }).then(response => {
         expect(response.status).toBe(409);
-      }));
-
-    test('Check internal code', () =>
-      getResponse({
-        endpoint: sessionsUrl,
-        method: 'post',
-        body: { email: user.email, password: `${user.password}a` }
-      }).then(response => {
         expect(response.body.internal_code).toBe('password_missmatch');
       }));
   });

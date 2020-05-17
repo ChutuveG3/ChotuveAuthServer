@@ -47,7 +47,6 @@ exports.createAdminSessionSchema = {
 };
 
 exports.checkAdmin = ({ body }, res, next) =>
-  // chequear que está en la db y que coincida la pass
   getAdminFromEmail(body.email)
     .then(admin => {
       if (!admin) throw adminNotExists('Admin with that email does not exist');
