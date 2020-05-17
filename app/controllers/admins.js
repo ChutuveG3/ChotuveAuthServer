@@ -1,6 +1,6 @@
 const { info } = require('../logger');
 const { createAdminMapper } = require('../mappers/admins');
-const { createAdmin } = require('../services/admins');
+const { createAdmin, loginAdmin } = require('../services/admins');
 const { encryptPassword } = require('../services/bcrypt');
 
 exports.signUpAdmin = ({ body }, res, next) => {
@@ -12,4 +12,13 @@ exports.signUpAdmin = ({ body }, res, next) => {
       res.status(201).end();
     })
     .catch(err => next(err));
+};
+
+exports.loginAdmin = ({ body }, res, next) => {
+  info(`Login admin with email: ${body.email}`);
+  return loginAdmin(body)
+    .then(token => {
+      res.status(200).send({ token });
+    })
+    .catch(next);
 };
