@@ -23,3 +23,12 @@ exports.adminEmailAlreadyExists = message => internalError(message, exports.ADMI
 
 exports.EXTERNAL_ERROR = 'external_error';
 exports.externalError = message => internalError(message, exports.EXTERNAL_ERROR);
+
+exports.JWT_ERROR = 'jwt_error';
+exports.jwtError = message => internalError(message, exports.JWT_ERROR);
+
+exports.USER_NOT_EXISTS = 'user_not_exists';
+exports.userNotExists = message => internalError(message, exports.USER_NOT_EXISTS);
+
+exports.PASSWORD_MISSMATCH = 'password_missmatch';
+exports.passwordMissmatch = message => internalError(message, exports.PASSWORD_MISSMATCH);

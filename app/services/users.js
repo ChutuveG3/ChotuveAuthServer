@@ -1,7 +1,8 @@
 const { Op } = require('sequelize');
 const { User } = require('../models');
 const { info, error } = require('../logger');
-const { databaseError, userEmailAlreadyExists, userNameAlreadyExists } = require('../errors');
+const { databaseError, userEmailAlreadyExists, userNameAlreadyExists, jwtError } = require('../errors');
+const { generateTokenFromEmail } = require('../services/jwt');
 
 exports.createUser = userData => {
   info(`Creating user in db with email: ${userData.email}`);
@@ -23,4 +24,19 @@ exports.createUser = userData => {
         throw databaseError(`User could not be created. Error: ${dbError}`);
       });
     });
+};
+
+exports.login = userData => {
+  info(`Getting session token for user with email: ${userData.email}`);
+  const token = generateTokenFromEmail({ email: userData.email });
+  if (!token) throw jwtError('Token could not be created');
+  return Promise.resolve(token);
+};
+
+exports.getUserFromEmail = email => {
+  info(`Getting user with with email: ${email} `);
+  return User.findOne({ where: { email } }).catch(dbError => {
+    error(`Could not get user. Error: ${dbError}`);
+    throw databaseError(`Could not get user. Error: ${dbError}`);
+  });
 };
