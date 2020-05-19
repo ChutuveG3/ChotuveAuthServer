@@ -26,6 +26,7 @@ before_install:
 before_script:
   - psql -c "CREATE DATABASE authserver;" -U postgres
   - npm run migrations-test
+  - npm run migrations
 
 deploy:
   - provider: script
