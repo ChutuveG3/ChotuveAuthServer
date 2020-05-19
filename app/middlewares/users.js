@@ -1,7 +1,8 @@
 const moment = require('moment');
 const { getUserFromEmail } = require('../services/users');
-const { userNotExists, passwordMissmatch } = require('../errors');
+const { passwordMissmatch } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
+const { authorizationSchema } = require('./sessions');
 
 exports.createUserSchema = {
   first_name: {
@@ -63,12 +64,13 @@ exports.createUserSessionSchema = {
 
 exports.checkUser = ({ body }, res, next) =>
   getUserFromEmail(body.email)
-    .then(user => {
-      if (!user) throw userNotExists('User with that email does not exist');
-      return checkPassword(body.password, user.password);
-    })
+    .then(user => checkPassword(body.password, user.password))
     .then(compareResult => {
       if (compareResult) return next();
       throw passwordMissmatch('Password does not match with that email');
     })
     .catch(next);
+
+exports.getCurrentUserSchema = {
+  ...authorizationSchema
+};

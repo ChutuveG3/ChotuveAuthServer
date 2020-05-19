@@ -3,6 +3,7 @@ const { User } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, userEmailAlreadyExists, userNameAlreadyExists, jwtError } = require('../errors');
 const { generateTokenFromEmail } = require('../services/jwt');
+const { userNotExists } = require('../errors');
 
 exports.createUser = userData => {
   info(`Creating user in db with email: ${userData.email}`);
@@ -35,8 +36,13 @@ exports.login = userData => {
 
 exports.getUserFromEmail = email => {
   info(`Getting user with with email: ${email} `);
-  return User.findOne({ where: { email } }).catch(dbError => {
-    error(`Could not get user. Error: ${dbError}`);
-    throw databaseError(`Could not get user. Error: ${dbError}`);
-  });
+  return User.findOne({ where: { email } })
+    .catch(dbError => {
+      error(`Could not get user. Error: ${dbError}`);
+      throw databaseError(`Could not get user. Error: ${dbError}`);
+    })
+    .then(user => {
+      if (!user) throw userNotExists(`Could not found user with email: ${email}`);
+      return user;
+    });
 };

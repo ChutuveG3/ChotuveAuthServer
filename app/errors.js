@@ -35,3 +35,6 @@ exports.passwordMissmatch = message => internalError(message, exports.PASSWORD_M
 
 exports.ADMIN_NOT_EXISTS = 'admin_not_exists';
 exports.adminNotExists = message => internalError(message, exports.ADMIN_NOT_EXISTS);
+
+exports.INVALID_TOKEN_ERROR = 'invalid_token_error';
+exports.invalidTokenError = message => internalError(message, exports.INVALID_TOKEN_ERROR);
