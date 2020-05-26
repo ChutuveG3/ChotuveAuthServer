@@ -9,7 +9,12 @@ const statusCodes = {
   [errors.INVALID_PARAMS]: 400,
   [errors.USER_EMAIL_ALREADY_EXISTS]: 400,
   [errors.USER_NAME_ALREADY_EXISTS]: 400,
-  [errors.ADMIN_EMAIL_ALREADY_EXISTS]: 400
+  [errors.ADMIN_EMAIL_ALREADY_EXISTS]: 400,
+  [errors.EXTERNAL_ERROR]: 500,
+  [errors.USER_NOT_EXISTS]: 409,
+  [errors.PASSWORD_MISSMATCH]: 409,
+  [errors.ADMIN_NOT_EXISTS]: 409,
+  [errors.INVALID_TOKEN_ERROR]: 401
 };
 
 exports.handle = (error, req, res, next) => {
