@@ -5,6 +5,7 @@ const { encryptPassword } = require('../../app/services/bcrypt');
 
 const baseUrl = '/users';
 const sessionsUrl = '/users/sessions';
+const validateTokenUrl = '/connect/accesstokenvalidation';
 
 describe('POST /users', () => {
   const userData = {
@@ -225,7 +226,7 @@ describe('POST /users/sessions', () => {
       ));
   });
   describe('User does not exists', () => {
-    test('Check status code and internal code', () =>
+    it('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -243,7 +244,7 @@ describe('POST /users/sessions', () => {
         .then(createdUser => (user = createdUser))
     );
 
-    test('Check status code and internal code', () =>
+    it('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -264,7 +265,7 @@ describe('POST /users/sessions', () => {
         .then(createdUser => (user = createdUser))
     );
 
-    test('Check status code', () =>
+    it('Check status code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -273,13 +274,47 @@ describe('POST /users/sessions', () => {
         expect(response.status).toBe(200);
       }));
 
-    test('Check that there is a token', () =>
+    it('Check that there is a token', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
         body: { email: user.email, password: '123456' }
       }).then(response => {
         expect(response.body).toHaveProperty('token');
+      }));
+
+    it('Check that the newly token is valid', () =>
+      getResponse({
+        endpoint: sessionsUrl,
+        method: 'post',
+        body: { email: user.email, password: '123456' }
+      }).then(response => {
+        getResponse({
+          endpoint: validateTokenUrl,
+          method: 'get',
+          header: { authorization: response.body.token }
+        }).then(res => {
+          expect(res.status).toBe(200);
+        });
+      }));
+
+    it('Check that there is a token', () =>
+      getResponse({
+        endpoint: validateTokenUrl,
+        method: 'get'
+      }).then(response => {
+        expect(response.status).toBe(400);
+        expect(response.body.internal_code).toBe('invalid_params');
+      }));
+
+    it('Check that any token is not valid', () =>
+      getResponse({
+        endpoint: validateTokenUrl,
+        method: 'get',
+        header: { authorization: 'ATokenSimilarToAnActualTokenButFake' }
+      }).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.internal_code).toBe('invalid_token_error');
       }));
   });
 });

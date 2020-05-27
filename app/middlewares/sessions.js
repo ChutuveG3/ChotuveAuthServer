@@ -1,4 +1,5 @@
 const { decodeToken } = require('../services/jwt');
+const { invalidTokenError } = require('../errors');
 
 exports.validateTokenAndLoadEmail = (req, res, next) => {
   try {
@@ -7,6 +8,14 @@ exports.validateTokenAndLoadEmail = (req, res, next) => {
     return next();
   } catch (error) {
     return next(error);
+  }
+};
+
+exports.validateToken = token => {
+  try {
+    return decodeToken(token);
+  } catch (error) {
+    throw invalidTokenError(error);
   }
 };
 
