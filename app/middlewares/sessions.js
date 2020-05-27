@@ -1,5 +1,4 @@
 const { decodeToken } = require('../services/jwt');
-const { invalidTokenError } = require('../errors');
 
 exports.validateTokenAndLoadEmail = (req, res, next) => {
   try {
@@ -11,13 +10,7 @@ exports.validateTokenAndLoadEmail = (req, res, next) => {
   }
 };
 
-exports.validateToken = token => {
-  try {
-    return decodeToken(token);
-  } catch (error) {
-    throw invalidTokenError(error);
-  }
-};
+exports.validateToken = token => decodeToken(token);
 
 exports.authorizationSchema = {
   authorization: {
