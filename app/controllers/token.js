@@ -1,12 +1,12 @@
 const { info } = require('../logger');
-const { validateToken } = require('../middlewares/sessions');
+const { decodeToken } = require('../services/jwt');
 
 exports.validateToken = (req, res, next) => {
   info('Validating token');
   try {
-    validateToken(req.headers.authorization);
-    return res.status(200).end();
+    decodeToken(req.headers.authorization);
   } catch (err) {
     return next(err);
   }
+  return res.status(200).end();
 };

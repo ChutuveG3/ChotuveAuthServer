@@ -10,8 +10,6 @@ exports.validateTokenAndLoadEmail = (req, res, next) => {
   }
 };
 
-exports.validateToken = token => decodeToken(token);
-
 exports.authorizationSchema = {
   authorization: {
     in: ['headers'],
