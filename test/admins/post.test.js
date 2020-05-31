@@ -19,6 +19,8 @@ describe('POST /admins', () => {
         delete currentAdminData.first_name;
         return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('first_name');
           expect(res.body.internal_code).toBe('invalid_params');
         });
       });
@@ -28,6 +30,8 @@ describe('POST /admins', () => {
         delete currentAdminData.last_name;
         return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('last_name');
           expect(res.body.internal_code).toBe('invalid_params');
         });
       });
@@ -37,6 +41,8 @@ describe('POST /admins', () => {
         delete currentAdminData.email;
         return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('email');
           expect(res.body.internal_code).toBe('invalid_params');
         });
       });
@@ -46,6 +52,7 @@ describe('POST /admins', () => {
         delete currentAdminData.password;
         return getResponse({ method: 'post', endpoint: baseUrl, body: currentAdminData }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(2);
           expect(res.body.internal_code).toBe('invalid_params');
         });
       });
@@ -55,6 +62,7 @@ describe('POST /admins', () => {
       it('Should set status code to 400 and internal code to invalid_params if missing multiple params', () =>
         getResponse({ method: 'post', endpoint: baseUrl, body: { first_name: 'fn' } }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(4);
           expect(res.body.internal_code).toBe('invalid_params');
         }));
     });
@@ -67,6 +75,8 @@ describe('POST /admins', () => {
           body: { ...adminData, email: 'invalid email' }
         }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('email');
           expect(res.body.internal_code).toBe('invalid_params');
         }));
     });
@@ -79,6 +89,8 @@ describe('POST /admins', () => {
           body: { ...adminData, first_name: 5 }
         }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('first_name');
           expect(res.body.internal_code).toBe('invalid_params');
         }));
     });
@@ -91,6 +103,8 @@ describe('POST /admins', () => {
           body: { ...adminData, password: 'aaaa' }
         }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('password');
           expect(res.body.internal_code).toBe('invalid_params');
         }));
     });
@@ -135,6 +149,8 @@ describe('POST /admins/sessions', () => {
       delete currentAdminData.email;
       return getResponse({ method: 'post', endpoint: sessionsUrl, body: currentAdminData }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('email');
         expect(res.body.internal_code).toBe('invalid_params');
       });
     });
@@ -144,6 +160,7 @@ describe('POST /admins/sessions', () => {
       delete currentAdminData.password;
       return getResponse({ method: 'post', endpoint: sessionsUrl, body: currentAdminData }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(2);
         expect(res.body.internal_code).toBe('invalid_params');
       });
     });
@@ -151,6 +168,7 @@ describe('POST /admins/sessions', () => {
     it('Should be status 400 if both email and password are missing', () =>
       getResponse({ method: 'post', endpoint: sessionsUrl, body: {} }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(3);
         expect(res.body.internal_code).toBe('invalid_params');
       }));
   });
@@ -162,6 +180,8 @@ describe('POST /admins/sessions', () => {
         body: { ...adminData, email: 'invalid email' }
       }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('email');
         expect(res.body.internal_code).toBe('invalid_params');
       }));
 
@@ -169,12 +189,14 @@ describe('POST /admins/sessions', () => {
       getResponse({ method: 'post', endpoint: sessionsUrl, body: { ...adminData, password: '1234' } }).then(
         res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('password');
           expect(res.body.internal_code).toBe('invalid_params');
         }
       ));
   });
   describe('Admin does not exists', () => {
-    test('Check status code and internal code', () =>
+    it('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -192,7 +214,7 @@ describe('POST /admins/sessions', () => {
         .then(createdAdmin => (admin = createdAdmin))
     );
 
-    test('Check status code and internal code', () =>
+    it('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -213,7 +235,7 @@ describe('POST /admins/sessions', () => {
         .then(createdAdmin => (admin = createdAdmin))
     );
 
-    test('Check status code', () =>
+    it('Check status code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -222,7 +244,7 @@ describe('POST /admins/sessions', () => {
         expect(response.status).toBe(200);
       }));
 
-    test('Check that there is a token', () =>
+    it('Check that there is a token', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',

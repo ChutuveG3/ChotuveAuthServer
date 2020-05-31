@@ -25,88 +25,56 @@ describe('POST /users', () => {
   };
 
   describe('Missing and invalid parameters', () => {
-    describe('Missing one parameter', () => {
-      it('Check status code', () =>
-        getResponse({ method: 'post', endpoint: baseUrl, body: userDataMissingParam }).then(res => {
-          expect(res.status).toBe(400);
-        }));
+    it('Should be status 400 if first_name is missing', () =>
+      getResponse({ method: 'post', endpoint: baseUrl, body: userDataMissingParam }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('first_name');
+        expect(res.body.internal_code).toBe('invalid_params');
+      }));
 
-      it('Check internal code', () =>
-        getResponse({ method: 'post', endpoint: baseUrl, body: userDataMissingParam }).then(res => {
-          expect(res.body.internal_code).toBe('invalid_params');
-        }));
-    });
+    it('Should be status 400 if multiple parameters are missing', () =>
+      getResponse({ method: 'post', endpoint: baseUrl, body: { last_name: 'ln' } }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(6);
+        expect(res.body.internal_code).toBe('invalid_params');
+      }));
 
-    describe('Missing multiple parameters', () => {
-      it('Check status code', () =>
-        getResponse({ method: 'post', endpoint: baseUrl, body: { last_name: 'ln' } }).then(res => {
-          expect(res.status).toBe(400);
-        }));
+    it('Should be status 400 if birthdate is invalid', () =>
+      getResponse({
+        method: 'post',
+        endpoint: baseUrl,
+        body: { ...userData, birthdate: 'invalid birthdate' }
+      }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('birthdate');
+        expect(res.body.internal_code).toBe('invalid_params');
+      }));
 
-      it('Check internal code', () =>
-        getResponse({ method: 'post', endpoint: baseUrl, body: { last_name: 'ln' } }).then(res => {
-          expect(res.body.internal_code).toBe('invalid_params');
-        }));
-    });
+    it('Should be status 400 if email is invalid', () =>
+      getResponse({
+        method: 'post',
+        endpoint: baseUrl,
+        body: { ...userData, email: 'invalid email' }
+      }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('email');
+        expect(res.body.internal_code).toBe('invalid_params');
+      }));
 
-    describe('Invalid date', () => {
-      it('Check status code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...userData, birthdate: 'invalid birthdate' }
-        }).then(res => {
-          expect(res.status).toBe(400);
-        }));
-      it('Check internal code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...userData, birthdate: 'invalid birthdate' }
-        }).then(res => {
-          expect(res.body.internal_code).toBe('invalid_params');
-        }));
-    });
-
-    describe('Invalid email', () => {
-      it('Check status code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...userData, email: 'invalid email' }
-        }).then(res => {
-          expect(res.status).toBe(400);
-        }));
-
-      it('Check internal code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...userData, email: 'invalid email' }
-        }).then(res => {
-          expect(res.body.internal_code).toBe('invalid_params');
-        }));
-    });
-
-    describe('Invalid user_name', () => {
-      it('Check status code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...userData, user_name: 5 }
-        }).then(res => {
-          expect(res.status).toBe(400);
-        }));
-
-      it('Check internal code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...userData, user_name: 5 }
-        }).then(res => {
-          expect(res.body.internal_code).toBe('invalid_params');
-        }));
-    });
+    it('Should be status 400 if username is invalid', () =>
+      getResponse({
+        method: 'post',
+        endpoint: baseUrl,
+        body: { ...userData, user_name: 5 }
+      }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('user_name');
+        expect(res.body.internal_code).toBe('invalid_params');
+      }));
 
     describe('Invalid password: Length less than 6 charcaters', () => {
       it('Check status code', () =>
@@ -116,6 +84,8 @@ describe('POST /users', () => {
           body: { ...userData, password: 'aaaa' }
         }).then(res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('password');
           expect(res.body.internal_code).toBe('invalid_params');
         }));
     });
@@ -137,37 +107,23 @@ describe('POST /users', () => {
     );
 
     describe('Create user with repeated email', () => {
-      it('Check status code', () =>
+      it('Check status code and internal code', () =>
         getResponse({ method: 'post', endpoint: baseUrl, body: { ...userData, email: user.email } }).then(
           res => {
             expect(res.status).toBe(400);
-          }
-        ));
-
-      it('Check internal code', () =>
-        getResponse({ method: 'post', endpoint: baseUrl, body: { ...userData, email: user.email } }).then(
-          res => {
             expect(res.body.internal_code).toBe('user_email_already_exists');
           }
         ));
     });
 
     describe('Create user with repeated username', () => {
-      it('Check status code', () =>
+      it('Check status code and internal code', () =>
         getResponse({
           method: 'post',
           endpoint: baseUrl,
           body: { ...userData, user_name: user.userName }
         }).then(res => {
           expect(res.status).toBe(400);
-        }));
-
-      it('Check internal code', () =>
-        getResponse({
-          method: 'post',
-          endpoint: baseUrl,
-          body: { ...userData, user_name: user.userName }
-        }).then(res => {
           expect(res.body.internal_code).toBe('user_name_already_exists');
         }));
     });
@@ -186,6 +142,8 @@ describe('POST /users/sessions', () => {
       delete currentUserData.email;
       return getResponse({ method: 'post', endpoint: sessionsUrl, body: currentUserData }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('email');
         expect(res.body.internal_code).toBe('invalid_params');
       });
     });
@@ -195,6 +153,7 @@ describe('POST /users/sessions', () => {
       delete currentUserData.password;
       return getResponse({ method: 'post', endpoint: sessionsUrl, body: currentUserData }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(2);
         expect(res.body.internal_code).toBe('invalid_params');
       });
     });
@@ -202,6 +161,7 @@ describe('POST /users/sessions', () => {
     it('Should be status 400 if both email and password are missing', () =>
       getResponse({ method: 'post', endpoint: sessionsUrl, body: {} }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(3);
         expect(res.body.internal_code).toBe('invalid_params');
       }));
   });
@@ -213,6 +173,8 @@ describe('POST /users/sessions', () => {
         body: { ...userData, email: 'invalid email' }
       }).then(res => {
         expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('email');
         expect(res.body.internal_code).toBe('invalid_params');
       }));
 
@@ -220,6 +182,8 @@ describe('POST /users/sessions', () => {
       getResponse({ method: 'post', endpoint: sessionsUrl, body: { ...userData, password: '1234' } }).then(
         res => {
           expect(res.status).toBe(400);
+          expect(res.body.message.errors).toHaveLength(1);
+          expect(res.body.message.errors[0].param).toBe('password');
           expect(res.body.internal_code).toBe('invalid_params');
         }
       ));
@@ -264,21 +228,13 @@ describe('POST /users/sessions', () => {
         .then(createdUser => (user = createdUser))
     );
 
-    it('Check status code', () =>
+    it('Check status code and that there is a token', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
         body: { email: user.email, password: '123456' }
       }).then(response => {
         expect(response.status).toBe(200);
-      }));
-
-    it('Check that there is a token', () =>
-      getResponse({
-        endpoint: sessionsUrl,
-        method: 'post',
-        body: { email: user.email, password: '123456' }
-      }).then(response => {
         expect(response.body).toHaveProperty('token');
       }));
   });
