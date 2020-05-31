@@ -46,3 +46,51 @@ exports.getUserFromEmail = email => {
       return user;
     });
 };
+
+exports.getUserFromUsername = username => {
+  info(`Getting user with with username: ${username} `);
+  return User.findOne({ where: { userName: username } })
+    .catch(dbError => {
+      error(`Could not get user. Error: ${dbError}`);
+      throw databaseError(`Could not get user. Error: ${dbError}`);
+    })
+    .then(user => {
+      if (!user) throw userNotExists(`Could not found user with username: ${username}`);
+      return user;
+    });
+};
+
+exports.updateProfile = (token, currentUser, userData) => {
+  info(`Getting user with with email: ${userData.email} `);
+  return User.findOne({ where: { email: userData.email } })
+    .catch(dbError => {
+      error(`Could not get user. Error: ${dbError}`);
+      throw databaseError(`Could not get user. Error: ${dbError}`);
+    })
+    .then(user => {
+      if (user && user.userName !== currentUser.userName) {
+        throw userEmailAlreadyExists('User could not be updated. User with that email already exists');
+      }
+      info('Updating user profile');
+      currentUser.firstName = userData.firstName;
+      currentUser.lastName = userData.lastName;
+      let generateToken = false;
+      if (currentUser.email !== userData.email) generateToken = true;
+      currentUser.email = userData.email;
+      currentUser.birthdate = userData.birthdate;
+      return currentUser
+        .save()
+        .catch(dbError => {
+          error(`Could not update user. Error: ${dbError}`);
+          throw databaseError(`Could not update user. Error: ${dbError}`);
+        })
+        .then(() => {
+          if (generateToken) {
+            const newToken = generateTokenFromEmail({ email: userData.email });
+            if (!newToken) throw jwtError('Token could not be created');
+            return Promise.resolve(newToken);
+          }
+          return token;
+        });
+    });
+};

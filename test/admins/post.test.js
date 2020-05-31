@@ -206,7 +206,7 @@ describe('POST /admins/sessions', () => {
         expect(response.body.internal_code).toBe('admin_not_exists');
       }));
   });
-  describe('Admin exists, password missmatch', () => {
+  describe('Admin exists, password mismatch', () => {
     let admin = {};
     beforeEach(() =>
       truncateDatabase()
@@ -221,7 +221,7 @@ describe('POST /admins/sessions', () => {
         body: { email: admin.email, password: `${admin.password}a` }
       }).then(response => {
         expect(response.status).toBe(409);
-        expect(response.body.internal_code).toBe('password_missmatch');
+        expect(response.body.internal_code).toBe('password_mismatch');
       }));
   });
   describe('Admin exists, password match', () => {

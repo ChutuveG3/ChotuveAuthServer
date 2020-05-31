@@ -199,7 +199,7 @@ describe('POST /users/sessions', () => {
         expect(response.body.internal_code).toBe('user_not_exists');
       }));
   });
-  describe('User exists, password missmatch', () => {
+  describe('User exists, password mismatch', () => {
     let user = {};
     beforeEach(() =>
       truncateDatabase()
@@ -214,7 +214,7 @@ describe('POST /users/sessions', () => {
         body: { email: user.email, password: `${user.password}a` }
       }).then(response => {
         expect(response.status).toBe(409);
-        expect(response.body.internal_code).toBe('password_missmatch');
+        expect(response.body.internal_code).toBe('password_mismatch');
       }));
   });
   describe('User exists, password match', () => {

@@ -40,13 +40,9 @@ describe('GET /users/me', () => {
     };
     beforeEach(() => truncateDatabase().then(() => userFactory.create({ ...userData, password: '123456' })));
 
-    it('Check status code', () =>
+    it('Check status code and user data', () =>
       getResponse({ endpoint: baseurl, method: 'get', header: { authorization: validToken } }).then(res => {
         expect(res.status).toBe(200);
-      }));
-
-    it('Check user data', () =>
-      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: validToken } }).then(res => {
         expect(res.body).toStrictEqual({
           first_name: userData.firstName,
           last_name: userData.lastName,
