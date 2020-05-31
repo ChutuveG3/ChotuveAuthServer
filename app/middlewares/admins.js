@@ -48,7 +48,10 @@ exports.createAdminSessionSchema = {
 
 exports.checkAdmin = ({ body }, res, next) =>
   getAdminFromEmail(body.email)
-    .then(admin => checkPassword(body.password, admin.password))
+    .then(admin => {
+      body.username = admin.userName;
+      return checkPassword(body.password, admin.password);
+    })
     .then(compareResult => {
       if (compareResult) return next();
       throw passwordMismatch('Password does not match with that email');

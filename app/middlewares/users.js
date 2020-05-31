@@ -64,7 +64,10 @@ exports.createUserSessionSchema = {
 
 exports.checkUser = ({ body }, res, next) =>
   getUserFromEmail(body.email)
-    .then(user => checkPassword(body.password, user.password))
+    .then(user => {
+      body.username = user.userName;
+      return checkPassword(body.password, user.password);
+    })
     .then(compareResult => {
       if (compareResult) return next();
       throw passwordMismatch('Password does not match with that email');

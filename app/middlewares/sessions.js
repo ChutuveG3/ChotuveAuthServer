@@ -1,26 +1,21 @@
 const { decodeToken } = require('../services/jwt');
-const { getUserFromEmail } = require('../services/users');
 const { userAndTokenMismatchError } = require('../errors');
 
-exports.validateTokenAndLoadEmail = (req, res, next) => {
+exports.validateTokenAndLoadUsername = (req, res, next) => {
   try {
     const tokenInfo = decodeToken(req.headers.authorization);
-    req.email = tokenInfo.sub;
-    return next();
+    req.username = tokenInfo.sub;
   } catch (error) {
     return next(error);
   }
+  return next();
 };
 
 exports.validateUser = (req, res, next) => {
   const userName = req.params.username;
-  const token_email = req.email;
-  return getUserFromEmail(token_email)
-    .then(user => {
-      if (user.userName !== userName) throw userAndTokenMismatchError('Username and token info do not match');
-      return next();
-    })
-    .catch(next);
+  const token_username = req.username;
+  if (userName !== token_username) next(userAndTokenMismatchError('Username and token info do not match'));
+  return next();
 };
 
 exports.validateToken = (req, res, next) => {

@@ -1,5 +1,5 @@
 const { getResponse, truncateDatabase } = require('../setup');
-const { generateTokenFromEmail } = require('../../app/services/jwt');
+const { generateTokenFromUsername } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
 const updateProfileBaseUrl = '/users';
@@ -141,8 +141,7 @@ describe('PUT /users/:username to update profile', () => {
       userName: 'un2',
       email: 'test2@test.test'
     };
-    const validToken = generateTokenFromEmail({ email: 'test@test.test' });
-    let newValidToken = '';
+    const validToken = generateTokenFromUsername({ username: 'un' });
     beforeEach(() =>
       truncateDatabase()
         .then(() => userFactory.create({ ...userData, password: '123456' }))
@@ -156,14 +155,13 @@ describe('PUT /users/:username to update profile', () => {
         header: { authorization: validToken }
       })
         .then(res => {
-          newValidToken = res.body.token;
           expect(res.status).toBe(200);
         })
         .then(() =>
           getResponse({
             endpoint: viewProfileBaseUrl,
             method: 'get',
-            header: { authorization: newValidToken }
+            header: { authorization: validToken }
           }).then(res => {
             expect(res.status).toBe(200);
             expect(res.body).toStrictEqual({

@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const { User } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, userEmailAlreadyExists, userNameAlreadyExists, jwtError } = require('../errors');
-const { generateTokenFromEmail } = require('../services/jwt');
+const { generateTokenFromUsername } = require('../services/jwt');
 const { userNotExists } = require('../errors');
 
 exports.createUser = userData => {
@@ -29,7 +29,7 @@ exports.createUser = userData => {
 
 exports.login = userData => {
   info(`Getting session token for user with email: ${userData.email}`);
-  const token = generateTokenFromEmail({ email: userData.email });
+  const token = generateTokenFromUsername({ username: userData.username });
   if (!token) throw jwtError('Token could not be created');
   return Promise.resolve(token);
 };
@@ -48,7 +48,7 @@ exports.getUserFromEmail = email => {
 };
 
 exports.getUserFromUsername = username => {
-  info(`Getting user with with username: ${username} `);
+  info(`Getting user with with username: ${username}`);
   return User.findOne({ where: { userName: username } })
     .catch(dbError => {
       error(`Could not get user. Error: ${dbError}`);
@@ -60,7 +60,7 @@ exports.getUserFromUsername = username => {
     });
 };
 
-exports.updateProfile = (token, currentUser, userData) => {
+exports.updateProfile = (currentUser, userData) => {
   info(`Getting user with with email: ${userData.email} `);
   return User.findOne({ where: { email: userData.email } })
     .catch(dbError => {
@@ -74,23 +74,11 @@ exports.updateProfile = (token, currentUser, userData) => {
       info('Updating user profile');
       currentUser.firstName = userData.firstName;
       currentUser.lastName = userData.lastName;
-      let generateToken = false;
-      if (currentUser.email !== userData.email) generateToken = true;
       currentUser.email = userData.email;
       currentUser.birthdate = userData.birthdate;
-      return currentUser
-        .save()
-        .catch(dbError => {
-          error(`Could not update user. Error: ${dbError}`);
-          throw databaseError(`Could not update user. Error: ${dbError}`);
-        })
-        .then(() => {
-          if (generateToken) {
-            const newToken = generateTokenFromEmail({ email: userData.email });
-            if (!newToken) throw jwtError('Token could not be created');
-            return Promise.resolve(newToken);
-          }
-          return token;
-        });
+      return currentUser.save().catch(dbError => {
+        error(`Could not update user. Error: ${dbError}`);
+        throw databaseError(`Could not update user. Error: ${dbError}`);
+      });
     });
 };

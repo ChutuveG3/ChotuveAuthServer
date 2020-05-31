@@ -1,10 +1,10 @@
 const { getResponse, truncateDatabase } = require('../setup');
-const { generateTokenFromEmail } = require('../../app/services/jwt');
+const { generateTokenFromUsername } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
 describe('GET /users/me', () => {
   const baseurl = '/users/me';
-  const validToken = generateTokenFromEmail({ email: 'test@test.test' });
+  const validToken = generateTokenFromUsername({ username: 'un' });
 
   describe('Missing parameters', () => {
     it('Should be status 400 if auth token header is missing', () =>

@@ -4,7 +4,7 @@ const { signup, login, getCurrentUser, updateProfile } = require('./controllers/
 const { signUpAdmin, loginAdmin } = require('./controllers/admins');
 const {
   validateToken,
-  validateTokenAndLoadEmail,
+  validateTokenAndLoadUsername,
   authorizationSchema,
   validateUser
 } = require('./middlewares/sessions');
@@ -25,11 +25,11 @@ exports.init = app => {
   app.post('/admins', [validateSchema(createAdminSchema)], signUpAdmin);
   app.post('/users/sessions', [validateSchema(createUserSessionSchema), checkUser], login);
   app.post('/admins/sessions', [validateSchema(createAdminSessionSchema), checkAdmin], loginAdmin);
-  app.get('/users/me', [validateSchema(getCurrentUserSchema), validateTokenAndLoadEmail], getCurrentUser);
+  app.get('/users/me', [validateSchema(getCurrentUserSchema), validateTokenAndLoadUsername], getCurrentUser);
   app.get('/connect/accesstokenvalidation', [validateSchema(authorizationSchema), validateToken], end);
   app.put(
     '/users/:username',
-    [validateSchema(updateProfileSchema), validateTokenAndLoadEmail, validateUser],
+    [validateSchema(updateProfileSchema), validateTokenAndLoadUsername, validateUser],
     updateProfile
   );
 };
