@@ -27,10 +27,10 @@ exports.getCurrentUser = ({ username }, res, next) => {
     .catch(next);
 };
 
-exports.updateProfile = ({ params: { username }, body }, res, next) => {
-  const userData = createUserMapper(body);
-  info(`Updating profile for user: ${username}`);
-  return getUserFromUsername(username)
+exports.updateProfile = (req, res, next) => {
+  const userData = createUserMapper(req.body);
+  info(`Updating profile for user: ${req.username}`);
+  return getUserFromUsername(req.username)
     .then(currentUser => updateProfile(currentUser, userData))
     .then(() => res.status(200).end())
     .catch(next);

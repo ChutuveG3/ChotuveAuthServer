@@ -80,12 +80,6 @@ exports.getCurrentUserSchema = {
 
 exports.updateProfileSchema = {
   ...authorizationSchema,
-  username: {
-    in: ['params'],
-    isString: true,
-    optional: false,
-    errorMessage: 'username should be a string'
-  },
   first_name: {
     in: ['body'],
     isString: true,

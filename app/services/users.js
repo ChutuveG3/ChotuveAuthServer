@@ -60,9 +60,8 @@ exports.getUserFromUsername = username => {
     });
 };
 
-exports.updateProfile = (currentUser, userData) => {
-  info(`Getting user with with email: ${userData.email} `);
-  return User.findOne({ where: { email: userData.email } })
+exports.updateProfile = (currentUser, userData) =>
+  User.findOne({ where: { email: userData.email } })
     .catch(dbError => {
       error(`Could not get user. Error: ${dbError}`);
       throw databaseError(`Could not get user. Error: ${dbError}`);
@@ -81,4 +80,3 @@ exports.updateProfile = (currentUser, userData) => {
         throw databaseError(`Could not update user. Error: ${dbError}`);
       });
     });
-};

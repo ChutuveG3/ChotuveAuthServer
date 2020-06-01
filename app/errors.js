@@ -38,6 +38,3 @@ exports.adminNotExists = message => internalError(message, exports.ADMIN_NOT_EXI
 
 exports.INVALID_TOKEN_ERROR = 'invalid_token_error';
 exports.invalidTokenError = message => internalError(message, exports.INVALID_TOKEN_ERROR);
-
-exports.USER_AND_TOKEN_MISMATCH_ERROR = 'user_and_token_mismatch_error';
-exports.userAndTokenMismatchError = message => internalError(message, exports.USER_AND_TOKEN_MISMATCH_ERROR);

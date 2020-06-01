@@ -1,5 +1,4 @@
 const { decodeToken } = require('../services/jwt');
-const { userAndTokenMismatchError } = require('../errors');
 
 exports.validateTokenAndLoadUsername = (req, res, next) => {
   try {
@@ -8,13 +7,6 @@ exports.validateTokenAndLoadUsername = (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-  return next();
-};
-
-exports.validateUser = (req, res, next) => {
-  const userName = req.params.username;
-  const token_username = req.username;
-  if (userName !== token_username) next(userAndTokenMismatchError('Username and token info do not match'));
   return next();
 };
 

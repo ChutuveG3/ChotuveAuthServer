@@ -2,15 +2,14 @@ const { getResponse, truncateDatabase } = require('../setup');
 const { generateTokenFromUsername } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
-const updateProfileBaseUrl = '/users';
+const updateProfileBaseUrl = '/users/me';
 const viewProfileBaseUrl = '/users/me';
 
 const authHeader = {
   authorization: 'aToken'
 };
 
-describe('PUT /users/:username to update profile', () => {
-  const testUsername = 'testUser';
+describe('PUT /users/me to update profile', () => {
   const updatedUserData = {
     first_name: 'MyNewFirstName',
     last_name: 'MyNewLastName',
@@ -21,7 +20,7 @@ describe('PUT /users/:username to update profile', () => {
     it('Should be status 400 if auth token header is missing', () =>
       getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         body: updatedUserData
       }).then(res => {
         expect(res.status).toBe(400);
@@ -35,7 +34,7 @@ describe('PUT /users/:username to update profile', () => {
       delete currentUpdateUserData.first_name;
       return getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -50,7 +49,7 @@ describe('PUT /users/:username to update profile', () => {
       delete currentUpdateUserData.last_name;
       return getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -65,7 +64,7 @@ describe('PUT /users/:username to update profile', () => {
       delete currentUpdateUserData.email;
       return getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -80,7 +79,7 @@ describe('PUT /users/:username to update profile', () => {
       delete currentUpdateUserData.birthdate;
       return getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -93,7 +92,7 @@ describe('PUT /users/:username to update profile', () => {
     it('Should be status 400 if all the body is missing', () =>
       getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         header: authHeader
       }).then(res => {
         expect(res.status).toBe(400);
@@ -103,7 +102,7 @@ describe('PUT /users/:username to update profile', () => {
     it('Should be status 400 if email is invalid', () =>
       getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         body: { ...updatedUserData, email: 'notanemail.com' },
         header: authHeader
       }).then(res => {
@@ -116,7 +115,7 @@ describe('PUT /users/:username to update profile', () => {
     it('Should be status 400 if birthdate is invalid', () =>
       getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${testUsername}`,
+        endpoint: updateProfileBaseUrl,
         body: { ...updatedUserData, birthdate: '4/6/95' },
         header: authHeader
       }).then(res => {
@@ -150,7 +149,7 @@ describe('PUT /users/:username to update profile', () => {
     it('Should be status 200 if update was successful', () =>
       getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${userData.userName}`,
+        endpoint: updateProfileBaseUrl,
         body: updatedUserData,
         header: { authorization: validToken }
       })
@@ -173,20 +172,10 @@ describe('PUT /users/:username to update profile', () => {
             });
           })
         ));
-    it('Should be status 401 if token email does not match username in params', () =>
-      getResponse({
-        method: 'put',
-        endpoint: `${updateProfileBaseUrl}/anotherUser`,
-        body: updatedUserData,
-        header: { authorization: validToken }
-      }).then(res => {
-        expect(res.status).toBe(401);
-        expect(res.body.internal_code).toBe('user_and_token_mismatch_error');
-      }));
     it('Should be status 400 if token email is already in use by another user', () =>
       getResponse({
         method: 'put',
-        endpoint: `${updateProfileBaseUrl}/${userData.userName}`,
+        endpoint: updateProfileBaseUrl,
         body: { ...updatedUserData, email: 'test2@test.test' },
         header: { authorization: validToken }
       }).then(res => {
