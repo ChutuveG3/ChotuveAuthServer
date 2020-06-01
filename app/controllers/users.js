@@ -4,23 +4,19 @@ const { createUserMapper } = require('../mappers/users');
 const { encryptPassword } = require('../services/bcrypt');
 const { getCurrentUserSerializer } = require('../serializers/users');
 
-exports.signup = ({ body }, res, next) => {
+exports.signUp = ({ body }, res, next) => {
   info(`Creating user with email: ${body.email}`);
   const userData = createUserMapper(body);
   return encryptPassword(userData.password)
     .then(password => createUser({ ...userData, password }))
-    .then(() => {
-      res.status(201).end();
-    })
-    .catch(err => next(err));
+    .then(() => res.status(201).end())
+    .catch(next);
 };
 
 exports.login = ({ body }, res, next) => {
   info(`Login user with email: ${body.email}`);
   return login(body)
-    .then(token => {
-      res.status(200).send({ token });
-    })
+    .then(token => res.status(200).send({ token }))
     .catch(next);
 };
 
@@ -31,11 +27,11 @@ exports.getCurrentUser = ({ username }, res, next) => {
     .catch(next);
 };
 
-exports.updateProfile = ({ params: username, body }, res, next) => {
-  const userName = username.username;
+exports.updateProfile = ({ params: { username }, body }, res, next) => {
   const userData = createUserMapper(body);
-  info(`Updating profile for user: ${userName}`);
-  return getUserFromUsername(userName)
-    .then(currentUser => updateProfile(currentUser, userData).then(() => res.status(200).end()))
+  info(`Updating profile for user: ${username}`);
+  return getUserFromUsername(username)
+    .then(currentUser => updateProfile(currentUser, userData))
+    .then(() => res.status(200).end())
     .catch(next);
 };

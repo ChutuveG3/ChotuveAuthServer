@@ -18,9 +18,9 @@ exports.validateUser = (req, res, next) => {
   return next();
 };
 
-exports.validateToken = (req, res, next) => {
+exports.validateToken = ({ headers: { authorization: token } }, res, next) => {
   try {
-    decodeToken(req.headers.authorization);
+    decodeToken(token);
   } catch (err) {
     return next(err);
   }

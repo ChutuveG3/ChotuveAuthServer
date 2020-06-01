@@ -3,9 +3,9 @@ const userFactory = require('../factory/users');
 const { encryptPassword } = require('../../app/services/bcrypt');
 
 const sessionsUrl = '/users/sessions';
-const validateTokenUrl = '/connect/accesstokenvalidation';
+const validateTokenUrl = '/connect/access_token_validation';
 
-describe('GET /connect/accesstokenvalidation', () => {
+describe('GET /connect/access_token_validation', () => {
   describe('Token validation', () => {
     let user = {};
     beforeEach(() =>
