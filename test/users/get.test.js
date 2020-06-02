@@ -1,10 +1,10 @@
 const { getResponse, truncateDatabase } = require('../setup');
-const { generateTokenFromUsername } = require('../../app/services/jwt');
+const { generateToken } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
 describe('GET /users/me', () => {
   const baseUrl = '/users/me';
-  const validToken = generateTokenFromUsername({ username: 'un' });
+  const validToken = generateToken({ data: 'un' });
 
   describe('Missing parameters', () => {
     it('Should be status 400 if auth token header is missing', () =>
@@ -68,7 +68,7 @@ describe('GET /users for admins', () => {
       }));
   });
   describe('Success cases', () => {
-    const validToken = generateTokenFromUsername({ username: 'admin1' });
+    const validToken = generateToken({ data: 'admin1' });
     const userData1 = {
       firstName: 'fn1',
       lastName: 'ln1',
