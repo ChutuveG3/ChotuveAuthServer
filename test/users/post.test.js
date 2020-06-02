@@ -225,7 +225,7 @@ describe('POST /users/sessions', () => {
       ));
   });
   describe('User does not exists', () => {
-    test('Check status code and internal code', () =>
+    it('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -243,7 +243,7 @@ describe('POST /users/sessions', () => {
         .then(createdUser => (user = createdUser))
     );
 
-    test('Check status code and internal code', () =>
+    it('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -264,7 +264,7 @@ describe('POST /users/sessions', () => {
         .then(createdUser => (user = createdUser))
     );
 
-    test('Check status code', () =>
+    it('Check status code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
@@ -273,7 +273,7 @@ describe('POST /users/sessions', () => {
         expect(response.status).toBe(200);
       }));
 
-    test('Check that there is a token', () =>
+    it('Check that there is a token', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
