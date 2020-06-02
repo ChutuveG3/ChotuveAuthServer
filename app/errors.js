@@ -30,8 +30,8 @@ exports.jwtError = message => internalError(message, exports.JWT_ERROR);
 exports.USER_NOT_EXISTS = 'user_not_exists';
 exports.userNotExists = message => internalError(message, exports.USER_NOT_EXISTS);
 
-exports.PASSWORD_MISSMATCH = 'password_missmatch';
-exports.passwordMissmatch = message => internalError(message, exports.PASSWORD_MISSMATCH);
+exports.PASSWORD_MISMATCH = 'password_mismatch';
+exports.passwordMismatch = message => internalError(message, exports.PASSWORD_MISMATCH);
 
 exports.ADMIN_NOT_EXISTS = 'admin_not_exists';
 exports.adminNotExists = message => internalError(message, exports.ADMIN_NOT_EXISTS);

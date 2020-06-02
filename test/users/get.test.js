@@ -1,34 +1,34 @@
 const { getResponse, truncateDatabase } = require('../setup');
-const { generateTokenFromEmail } = require('../../app/services/jwt');
+const { generateTokenFromUsername } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
 describe('GET /users/me', () => {
   const baseurl = '/users/me';
-  const validToken = generateTokenFromEmail({ email: 'test@test.test' });
+  const validToken = generateTokenFromUsername({ username: 'un' });
 
   describe('Missing parameters', () => {
-    test('Check status code and internal code', () =>
-      getResponse({ endpoint: baseurl, method: 'get' }).then(response => {
-        expect(response.status).toBe(400);
-        expect(response.body.internal_code).toBe('invalid_params');
+    it('Should be status 400 if auth token header is missing', () =>
+      getResponse({ endpoint: baseurl, method: 'get' }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('authorization');
+        expect(res.body.internal_code).toBe('invalid_params');
       }));
   });
   describe('Invalid token', () => {
-    test('Check status code and internal code', () =>
-      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: 'pepe' } }).then(response => {
-        expect(response.status).toBe(401);
-        expect(response.body.internal_code).toBe('invalid_token_error');
+    it('Check status code and internal code', () =>
+      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: 'pepe' } }).then(res => {
+        expect(res.status).toBe(401);
+        expect(res.body.internal_code).toBe('invalid_token_error');
       }));
   });
   describe('User does not exist', () => {
     beforeEach(() => truncateDatabase);
-    test('Check status code and internal code', () =>
-      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: validToken } }).then(
-        response => {
-          expect(response.status).toBe(409);
-          expect(response.body.internal_code).toBe('user_not_exists');
-        }
-      ));
+    it('Check status code and internal code', () =>
+      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: validToken } }).then(res => {
+        expect(res.status).toBe(409);
+        expect(res.body.internal_code).toBe('user_not_exists');
+      }));
   });
   describe('Get user correctly', () => {
     const userData = {
@@ -40,24 +40,16 @@ describe('GET /users/me', () => {
     };
     beforeEach(() => truncateDatabase().then(() => userFactory.create({ ...userData, password: '123456' })));
 
-    test('Check status code', () =>
-      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: validToken } }).then(
-        response => {
-          expect(response.status).toBe(200);
-        }
-      ));
-
-    test('Check user data', () =>
-      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: validToken } }).then(
-        response => {
-          expect(response.body).toStrictEqual({
-            first_name: userData.firstName,
-            last_name: userData.lastName,
-            birthdate: userData.birthdate,
-            user_name: userData.userName,
-            email: userData.email
-          });
-        }
-      ));
+    it('Check status code and user data', () =>
+      getResponse({ endpoint: baseurl, method: 'get', header: { authorization: validToken } }).then(res => {
+        expect(res.status).toBe(200);
+        expect(res.body).toStrictEqual({
+          first_name: userData.firstName,
+          last_name: userData.lastName,
+          birthdate: userData.birthdate,
+          user_name: userData.userName,
+          email: userData.email
+        });
+      }));
   });
 });

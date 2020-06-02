@@ -3,9 +3,9 @@ const userFactory = require('../factory/users');
 const { encryptPassword } = require('../../app/services/bcrypt');
 
 const sessionsUrl = '/users/sessions';
-const validateTokenUrl = '/connect/accesstokenvalidation';
+const validateTokenUrl = '/connect/access_token_validation';
 
-describe('GET /connect/accesstokenvalidation', () => {
+describe('GET /connect/access_token_validation', () => {
   describe('Token validation', () => {
     let user = {};
     beforeEach(() =>
@@ -35,9 +35,11 @@ describe('GET /connect/accesstokenvalidation', () => {
       getResponse({
         endpoint: validateTokenUrl,
         method: 'get'
-      }).then(response => {
-        expect(response.status).toBe(400);
-        expect(response.body.internal_code).toBe('invalid_params');
+      }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.message.errors).toHaveLength(1);
+        expect(res.body.message.errors[0].param).toBe('authorization');
+        expect(res.body.internal_code).toBe('invalid_params');
       }));
 
     it('Should be status 401 if token is present but is not valid', () =>
@@ -45,9 +47,9 @@ describe('GET /connect/accesstokenvalidation', () => {
         endpoint: validateTokenUrl,
         method: 'get',
         header: { authorization: 'ATokenSimilarToAnActualTokenButFake' }
-      }).then(response => {
-        expect(response.status).toBe(401);
-        expect(response.body.internal_code).toBe('invalid_token_error');
+      }).then(res => {
+        expect(res.status).toBe(401);
+        expect(res.body.internal_code).toBe('invalid_token_error');
       }));
   });
 });
