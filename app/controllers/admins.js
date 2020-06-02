@@ -8,17 +8,13 @@ exports.signUpAdmin = ({ body }, res, next) => {
   const adminData = createAdminMapper(body);
   return encryptPassword(adminData.password)
     .then(password => createAdmin({ ...adminData, password }))
-    .then(() => {
-      res.status(201).end();
-    })
+    .then(() => res.status(201).end())
     .catch(err => next(err));
 };
 
 exports.loginAdmin = ({ body }, res, next) => {
   info(`Login admin with email: ${body.email}`);
   return loginAdmin(body)
-    .then(token => {
-      res.status(200).send({ token });
-    })
+    .then(token => res.status(200).send({ token }))
     .catch(next);
 };

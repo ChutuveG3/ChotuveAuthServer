@@ -14,7 +14,12 @@ const {
   getCurrentUserSchema,
   updateProfileSchema
 } = require('./middlewares/users');
-const { createAdminSchema, createAdminSessionSchema, checkAdmin } = require('./middlewares/admins');
+const {
+  createAdminSchema,
+  createAdminSessionSchema,
+  checkAdmin,
+  getUsersSchema
+} = require('./middlewares/admins');
 const { validateSchema } = require('./middlewares/params_validator');
 
 exports.init = app => {
@@ -27,4 +32,5 @@ exports.init = app => {
   app.get('/connect/access_token_validation', [validateSchema(authorizationSchema), validateToken], end);
   app.get('/users/me', [validateSchema(getCurrentUserSchema), validateTokenAndLoadUsername], getCurrentUser);
   app.put('/users/me', [validateSchema(updateProfileSchema), validateTokenAndLoadUsername], updateProfile);
+  app.get('/users', [validateSchema(getUsersSchema), validateToken], end);
 };

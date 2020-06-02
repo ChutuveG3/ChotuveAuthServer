@@ -1,6 +1,7 @@
 const { passwordMismatch } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { getAdminFromEmail } = require('../services/admins');
+const { authorizationSchema } = require('./sessions');
 
 exports.createAdminSchema = {
   first_name: {
@@ -57,3 +58,7 @@ exports.checkAdmin = ({ body }, res, next) =>
       throw passwordMismatch('Password does not match with that email');
     })
     .catch(next);
+
+exports.getUsersSchema = {
+  ...authorizationSchema
+};
