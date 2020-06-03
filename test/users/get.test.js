@@ -4,7 +4,7 @@ const userFactory = require('../factory/users');
 
 describe('GET /users/me', () => {
   const baseUrl = '/users/me';
-  const validToken = generateToken({ data: 'un' });
+  const validToken = generateToken({ data: 'un', privilege: false });
 
   describe('Missing parameters', () => {
     it('Should be status 400 if auth token header is missing', () =>
@@ -68,7 +68,7 @@ describe('GET /users for admins', () => {
       }));
   });
   describe('Success cases', () => {
-    const validToken = generateToken({ data: 'admin1' });
+    const validToken = generateToken({ data: 'admin1', privilege: true });
     const userData1 = {
       firstName: 'fn1',
       lastName: 'ln1',

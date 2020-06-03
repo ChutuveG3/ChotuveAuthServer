@@ -5,7 +5,8 @@ const { signUpAdmin, loginAdmin, getUsers } = require('./controllers/admins');
 const {
   validateToken,
   validateTokenAndLoadUsername,
-  authorizationSchema
+  authorizationSchema,
+  checkPrivileges
 } = require('./middlewares/sessions');
 const {
   createUserSchema,
@@ -32,5 +33,5 @@ exports.init = app => {
   app.get('/connect/access_token_validation', [validateSchema(authorizationSchema), validateToken], end);
   app.get('/users/me', [validateSchema(getCurrentUserSchema), validateTokenAndLoadUsername], getCurrentUser);
   app.put('/users/me', [validateSchema(updateProfileSchema), validateTokenAndLoadUsername], updateProfile);
-  app.get('/users', [validateSchema(getUsersSchema), validateToken], getUsers);
+  app.get('/users', [validateSchema(getUsersSchema), validateToken, checkPrivileges], getUsers);
 };

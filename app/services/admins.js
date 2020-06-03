@@ -36,7 +36,7 @@ exports.getAdminFromEmail = email => {
 
 exports.loginAdmin = adminData => {
   info(`Getting session token for admin with email: ${adminData.email}`);
-  const token = generateToken({ data: adminData.email });
+  const token = generateToken({ data: adminData.email, privilege: true });
   if (!token) throw jwtError('Token could not be created');
   return Promise.resolve(token);
 };

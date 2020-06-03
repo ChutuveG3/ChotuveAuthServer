@@ -29,7 +29,7 @@ exports.createUser = userData => {
 
 exports.login = userData => {
   info(`Getting session token for user with email: ${userData.email}`);
-  const token = generateToken({ data: userData.username });
+  const token = generateToken({ data: userData.username, privilege: false });
   if (!token) throw jwtError('Token could not be created');
   return Promise.resolve(token);
 };

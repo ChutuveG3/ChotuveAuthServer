@@ -140,7 +140,7 @@ describe('PUT /users/me to update profile', () => {
       userName: 'un2',
       email: 'test2@test.test'
     };
-    const validToken = generateToken({ data: 'un' });
+    const validToken = generateToken({ data: 'un', privilege: false });
     beforeEach(() =>
       truncateDatabase()
         .then(() => userFactory.create({ ...userData, password: '123456' }))

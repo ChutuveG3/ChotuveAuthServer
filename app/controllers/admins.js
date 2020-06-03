@@ -2,7 +2,7 @@ const { info } = require('../logger');
 const { createAdminMapper } = require('../mappers/admins');
 const { createAdmin, loginAdmin, getUsers } = require('../services/admins');
 const { encryptPassword } = require('../services/bcrypt');
-const { getCurrentUserSerializer } = require('../serializers/users');
+const { getUsersSerializer } = require('../serializers/users');
 
 exports.signUpAdmin = ({ body }, res, next) => {
   info(`Creating admin with email: ${body.email}`);
@@ -23,6 +23,6 @@ exports.loginAdmin = ({ body }, res, next) => {
 exports.getUsers = (req, res, next) => {
   info('Getting users');
   return getUsers()
-    .then(users => res.status(200).send(users.map(user => getCurrentUserSerializer(user))))
+    .then(users => res.status(200).send(getUsersSerializer(users)))
     .catch(next);
 };
