@@ -1,5 +1,5 @@
 const { getResponse, truncateDatabase } = require('../setup');
-const { generateTokenFromUsername } = require('../../app/services/jwt');
+const { generateToken } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
 const updateProfileBaseUrl = '/users/me';
@@ -140,7 +140,7 @@ describe('PUT /users/me to update profile', () => {
       userName: 'un2',
       email: 'test2@test.test'
     };
-    const validToken = generateTokenFromUsername({ username: 'un' });
+    const validToken = generateToken({ data: 'un', privilege: false });
     beforeEach(() =>
       truncateDatabase()
         .then(() => userFactory.create({ ...userData, password: '123456' }))

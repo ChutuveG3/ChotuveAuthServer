@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const { User } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, userEmailAlreadyExists, userNameAlreadyExists, jwtError } = require('../errors');
-const { generateTokenFromUsername } = require('../services/jwt');
+const { generateToken } = require('../services/jwt');
 const { userNotExists } = require('../errors');
 
 exports.createUser = userData => {
@@ -29,7 +29,7 @@ exports.createUser = userData => {
 
 exports.login = userData => {
   info(`Getting session token for user with email: ${userData.email}`);
-  const token = generateTokenFromUsername({ username: userData.username });
+  const token = generateToken({ data: userData.username, privilege: false });
   if (!token) throw jwtError('Token could not be created');
   return Promise.resolve(token);
 };

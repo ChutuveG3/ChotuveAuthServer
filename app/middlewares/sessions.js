@@ -1,4 +1,5 @@
 const { decodeToken } = require('../services/jwt');
+const { unauthorized } = require('../errors');
 
 exports.validateTokenAndLoadUsername = (req, res, next) => {
   try {
@@ -10,9 +11,10 @@ exports.validateTokenAndLoadUsername = (req, res, next) => {
   return next();
 };
 
-exports.validateToken = ({ headers: { authorization: token } }, res, next) => {
+exports.validateToken = (req, res, next) => {
   try {
-    decodeToken(token);
+    const tokenInfo = decodeToken(req.headers.authorization);
+    req.privilege = tokenInfo.privilege;
   } catch (err) {
     return next(err);
   }
@@ -25,4 +27,9 @@ exports.authorizationSchema = {
     isString: true,
     errorMessage: 'authorization should be a string and be present in headers'
   }
+};
+
+exports.checkPrivileges = (req, res, next) => {
+  if (!req.privilege) next(unauthorized('You do not have the privileges to perform this operation'));
+  return next();
 };

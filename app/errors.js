@@ -38,3 +38,6 @@ exports.adminNotExists = message => internalError(message, exports.ADMIN_NOT_EXI
 
 exports.INVALID_TOKEN_ERROR = 'invalid_token_error';
 exports.invalidTokenError = message => internalError(message, exports.INVALID_TOKEN_ERROR);
+
+exports.UNAUTHORIZED = 'unauthorized';
+exports.unauthorized = message => internalError(message, exports.UNAUTHORIZED);
