@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const { User } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, userEmailAlreadyExists, userNameAlreadyExists, jwtError } = require('../errors');
-const { generateTokenFromEmail } = require('../services/jwt');
+const { generateToken } = require('../services/jwt');
 const { userNotExists } = require('../errors');
 
 exports.createUser = userData => {
@@ -29,7 +29,7 @@ exports.createUser = userData => {
 
 exports.login = userData => {
   info(`Getting session token for user with email: ${userData.email}`);
-  const token = generateTokenFromEmail({ email: userData.email });
+  const token = generateToken({ data: userData.username, privilege: false });
   if (!token) throw jwtError('Token could not be created');
   return Promise.resolve(token);
 };
@@ -46,3 +46,37 @@ exports.getUserFromEmail = email => {
       return user;
     });
 };
+
+exports.getUserFromUsername = username => {
+  info(`Getting user with with username: ${username}`);
+  return User.findOne({ where: { userName: username } })
+    .catch(dbError => {
+      error(`Could not get user. Error: ${dbError}`);
+      throw databaseError(`Could not get user. Error: ${dbError}`);
+    })
+    .then(user => {
+      if (!user) throw userNotExists(`Could not found user with username: ${username}`);
+      return user;
+    });
+};
+
+exports.updateProfile = (currentUser, userData) =>
+  User.findOne({ where: { email: userData.email } })
+    .catch(dbError => {
+      error(`Could not get user. Error: ${dbError}`);
+      throw databaseError(`Could not get user. Error: ${dbError}`);
+    })
+    .then(user => {
+      if (user && user.userName !== currentUser.userName) {
+        throw userEmailAlreadyExists('User could not be updated. User with that email already exists');
+      }
+      info('Updating user profile');
+      currentUser.firstName = userData.firstName;
+      currentUser.lastName = userData.lastName;
+      currentUser.email = userData.email;
+      currentUser.birthdate = userData.birthdate;
+      return currentUser.save().catch(dbError => {
+        error(`Could not update user. Error: ${dbError}`);
+        throw databaseError(`Could not update user. Error: ${dbError}`);
+      });
+    });

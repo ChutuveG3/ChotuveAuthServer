@@ -7,3 +7,5 @@ exports.getCurrentUserSerializer = user => ({
   email: user.email,
   birthdate: moment(user.birthdate).format('YYYY-MM-DD')
 });
+
+exports.getUsersSerializer = users => users.map(user => module.exports.getCurrentUserSerializer(user));

@@ -1,7 +1,7 @@
-const { Admin } = require('../models');
+const { Admin, User } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, adminEmailAlreadyExists, jwtError, adminNotExists } = require('../errors');
-const { generateTokenFromEmail } = require('../services/jwt');
+const { generateToken } = require('../services/jwt');
 
 exports.createAdmin = adminData => {
   info(`Creating admin in db with email: ${adminData.email}`);
@@ -36,7 +36,13 @@ exports.getAdminFromEmail = email => {
 
 exports.loginAdmin = adminData => {
   info(`Getting session token for admin with email: ${adminData.email}`);
-  const token = generateTokenFromEmail({ email: adminData.email });
+  const token = generateToken({ data: adminData.email, privilege: true });
   if (!token) throw jwtError('Token could not be created');
   return Promise.resolve(token);
 };
+
+exports.getUsers = () =>
+  User.findAll().catch(dbError => {
+    error(`Could not get users. Error: ${dbError}`);
+    throw databaseError(`Could not get users. Error: ${dbError}`);
+  });
