@@ -20,7 +20,7 @@ exports.login = ({ body }, res, next) => {
     .catch(next);
 };
 
-exports.getCurrentUser = ({ username }, res, next) => {
+exports.getCurrentUser = ({ params: { username } }, res, next) => {
   info(`Getting user with username: ${username}`);
   return getUserFromUsername(username)
     .then(user => res.status(200).send(getCurrentUserSerializer(user)))

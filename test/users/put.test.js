@@ -3,7 +3,7 @@ const { generateToken } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
 const updateProfileBaseUrl = '/users/me';
-const viewProfileBaseUrl = '/users/me';
+const viewProfileBaseUrl = '/users';
 
 const authHeader = {
   authorization: 'aToken'
@@ -140,7 +140,7 @@ describe('PUT /users/me to update profile', () => {
       userName: 'un2',
       email: 'test2@test.test'
     };
-    const validToken = generateToken({ data: 'un', privilege: false });
+    const validToken = generateToken({ data: userData.userName, privilege: false });
     beforeEach(() =>
       truncateDatabase()
         .then(() => userFactory.create({ ...userData, password: '123456' }))
@@ -158,7 +158,7 @@ describe('PUT /users/me to update profile', () => {
         })
         .then(() =>
           getResponse({
-            endpoint: viewProfileBaseUrl,
+            endpoint: `${viewProfileBaseUrl}/${userData.userName}`,
             method: 'get',
             header: { authorization: validToken }
           }).then(res => {
