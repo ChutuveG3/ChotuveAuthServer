@@ -31,8 +31,12 @@ exports.init = app => {
   app.post('/users/sessions', [validateSchema(createUserSessionSchema), checkUser], login);
   app.post('/admins/sessions', [validateSchema(createAdminSessionSchema), checkAdmin], loginAdmin);
   app.get('/connect/access_token_validation', [validateSchema(authorizationSchema), validateToken], end);
+  app.get(
+    '/connect/access_token_validation_with_user',
+    [validateSchema(authorizationSchema), validateTokenAndLoadUsername],
+    getUser
+  );
   app.get('/users/:username', [validateSchema(viewProfileSchema), validateToken], viewProfile);
   app.put('/users/me', [validateSchema(updateProfileSchema), validateTokenAndLoadUsername], updateProfile);
   app.get('/users', [validateSchema(getUsersSchema), validateToken, checkPrivileges], getUsers);
-  app.get('/user', [validateSchema(authorizationSchema), validateTokenAndLoadUsername], getUser);
 };
