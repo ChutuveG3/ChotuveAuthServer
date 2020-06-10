@@ -22,9 +22,7 @@ exports.login = ({ body }, res, next) => {
 
 exports.viewProfile = ({ params: { username } }, res, next) => {
   info(`Viewing profile for user with username: ${username}`);
-  return getUserFromUsername(username)
-    .then(user => res.status(200).send(getCurrentUserSerializer(user)))
-    .catch(next);
+  return exports.getUser({ username }, res, next);
 };
 
 exports.getUser = ({ username }, res, next) => {
