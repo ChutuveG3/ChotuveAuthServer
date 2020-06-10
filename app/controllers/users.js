@@ -14,8 +14,8 @@ exports.signUp = ({ body }, res, next) => {
 };
 
 exports.login = ({ body }, res, next) => {
-  info(`Login user with email: ${body.email}`);
-  return login(body)
+  info(`Login user with username: ${body.username}`);
+  return login(body.username)
     .then(token => res.status(200).send({ token }))
     .catch(next);
 };

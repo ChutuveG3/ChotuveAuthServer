@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getUserFromEmail } = require('../services/users');
+const { getUserFromUsername } = require('../services/users');
 const { passwordMismatch } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
@@ -47,11 +47,11 @@ exports.createUserSchema = {
 };
 
 exports.createUserSessionSchema = {
-  email: {
+  username: {
     in: ['body'],
-    isEmail: true,
+    isString: true,
     optional: false,
-    errorMessage: 'email should be a valid email'
+    errorMessage: 'username should be a string'
   },
   password: {
     in: ['body'],
@@ -63,14 +63,11 @@ exports.createUserSessionSchema = {
 };
 
 exports.checkUser = ({ body }, res, next) =>
-  getUserFromEmail(body.email)
-    .then(user => {
-      body.username = user.userName;
-      return checkPassword(body.password, user.password);
-    })
+  getUserFromUsername(body.username)
+    .then(user => checkPassword(body.password, user.password))
     .then(compareResult => {
       if (compareResult) return next();
-      throw passwordMismatch('Password does not match with that email');
+      throw passwordMismatch('Password does not match with that username');
     })
     .catch(next);
 
