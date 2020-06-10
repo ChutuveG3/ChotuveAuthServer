@@ -1,6 +1,6 @@
 const { healthCheck } = require('./controllers/healthCheck');
 const { home, end } = require('./controllers/home');
-const { signUp, login, getCurrentUser, updateProfile } = require('./controllers/users');
+const { signUp, login, viewProfile, getUser, updateProfile } = require('./controllers/users');
 const { signUpAdmin, loginAdmin, getUsers } = require('./controllers/admins');
 const {
   validateToken,
@@ -12,7 +12,7 @@ const {
   createUserSchema,
   createUserSessionSchema,
   checkUser,
-  getCurrentUserSchema,
+  viewProfileSchema,
   updateProfileSchema
 } = require('./middlewares/users');
 const {
@@ -31,7 +31,8 @@ exports.init = app => {
   app.post('/users/sessions', [validateSchema(createUserSessionSchema), checkUser], login);
   app.post('/admins/sessions', [validateSchema(createAdminSessionSchema), checkAdmin], loginAdmin);
   app.get('/connect/access_token_validation', [validateSchema(authorizationSchema), validateToken], end);
-  app.get('/users/:username', [validateSchema(getCurrentUserSchema), validateToken], getCurrentUser);
+  app.get('/users/:username', [validateSchema(viewProfileSchema), validateToken], viewProfile);
   app.put('/users/me', [validateSchema(updateProfileSchema), validateTokenAndLoadUsername], updateProfile);
   app.get('/users', [validateSchema(getUsersSchema), validateToken, checkPrivileges], getUsers);
+  app.get('/user', [validateSchema(authorizationSchema), validateTokenAndLoadUsername], getUser);
 };

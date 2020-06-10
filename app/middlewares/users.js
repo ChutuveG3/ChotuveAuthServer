@@ -74,7 +74,7 @@ exports.checkUser = ({ body }, res, next) =>
     })
     .catch(next);
 
-exports.getCurrentUserSchema = {
+exports.viewProfileSchema = {
   ...authorizationSchema,
   username: {
     in: ['params'],
