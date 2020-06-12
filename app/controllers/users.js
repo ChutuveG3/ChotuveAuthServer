@@ -1,6 +1,6 @@
 const { info } = require('../logger');
 const { createUser, login, getUserFromUsername, updateProfile } = require('../services/users');
-const { createUserMapper } = require('../mappers/users');
+const { createUserMapper, updateUserMapper } = require('../mappers/users');
 const { encryptPassword } = require('../services/bcrypt');
 const { getCurrentUserSerializer } = require('../serializers/users');
 
@@ -33,7 +33,7 @@ exports.getUser = ({ username }, res, next) => {
 };
 
 exports.updateProfile = (req, res, next) => {
-  const userData = createUserMapper(req.body);
+  const userData = updateUserMapper(req.body);
   info(`Updating profile for user: ${req.username}`);
   return getUserFromUsername(req.username)
     .then(currentUser => updateProfile(currentUser, userData))

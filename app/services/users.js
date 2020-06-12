@@ -71,11 +71,7 @@ exports.updateProfile = (currentUser, userData) =>
         throw userEmailAlreadyExists('User could not be updated. User with that email already exists');
       }
       info('Updating user profile');
-      currentUser.firstName = userData.firstName;
-      currentUser.lastName = userData.lastName;
-      currentUser.email = userData.email;
-      currentUser.birthdate = userData.birthdate;
-      return currentUser.save().catch(dbError => {
+      return User.update(userData, { where: { userName: currentUser.userName } }).catch(dbError => {
         error(`Could not update user. Error: ${dbError}`);
         throw databaseError(`Could not update user. Error: ${dbError}`);
       });
