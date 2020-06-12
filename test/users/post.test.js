@@ -132,18 +132,18 @@ describe('POST /users', () => {
 
 describe('POST /users/sessions', () => {
   const userData = {
-    email: 'test@test.com',
+    username: 'MyUN',
     password: 'MyPassword'
   };
 
   describe('Missing parameters', () => {
-    it('Should be status 400 if email is missing', () => {
+    it('Should be status 400 if username is missing', () => {
       const currentUserData = { ...userData };
-      delete currentUserData.email;
+      delete currentUserData.username;
       return getResponse({ method: 'post', endpoint: sessionsUrl, body: currentUserData }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
-        expect(res.body.message.errors[0].param).toBe('email');
+        expect(res.body.message.errors[0].param).toBe('username');
         expect(res.body.internal_code).toBe('invalid_params');
       });
     });
@@ -158,7 +158,7 @@ describe('POST /users/sessions', () => {
       });
     });
 
-    it('Should be status 400 if both email and password are missing', () =>
+    it('Should be status 400 if both username and password are missing', () =>
       getResponse({ method: 'post', endpoint: sessionsUrl, body: {} }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(3);
@@ -166,18 +166,6 @@ describe('POST /users/sessions', () => {
       }));
   });
   describe('Invalid parameters', () => {
-    it('Should be status 400 if email is invalid', () =>
-      getResponse({
-        method: 'post',
-        endpoint: sessionsUrl,
-        body: { ...userData, email: 'invalid email' }
-      }).then(res => {
-        expect(res.status).toBe(400);
-        expect(res.body.message.errors).toHaveLength(1);
-        expect(res.body.message.errors[0].param).toBe('email');
-        expect(res.body.internal_code).toBe('invalid_params');
-      }));
-
     it('Should be status 400 if password is shorter than 6 characters', () =>
       getResponse({ method: 'post', endpoint: sessionsUrl, body: { ...userData, password: '1234' } }).then(
         res => {
@@ -190,11 +178,7 @@ describe('POST /users/sessions', () => {
   });
   describe('User does not exists', () => {
     it('Check status code and internal code', () =>
-      getResponse({
-        endpoint: sessionsUrl,
-        method: 'post',
-        body: { email: 'noexiste@noexiste.noexiste', password: 'noexiste' }
-      }).then(response => {
+      getResponse({ endpoint: sessionsUrl, method: 'post', body: userData }).then(response => {
         expect(response.status).toBe(409);
         expect(response.body.internal_code).toBe('user_not_exists');
       }));
@@ -203,7 +187,7 @@ describe('POST /users/sessions', () => {
     let user = {};
     beforeEach(() =>
       truncateDatabase()
-        .then(() => userFactory.create({ email: 'test@test.test', password: '123456' }))
+        .then(() => userFactory.create({ userName: 'testUN', password: '123456' }))
         .then(createdUser => (user = createdUser))
     );
 
@@ -211,7 +195,7 @@ describe('POST /users/sessions', () => {
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
-        body: { email: user.email, password: `${user.password}a` }
+        body: { username: user.userName, password: `${user.password}a` }
       }).then(response => {
         expect(response.status).toBe(409);
         expect(response.body.internal_code).toBe('password_mismatch');
@@ -222,9 +206,7 @@ describe('POST /users/sessions', () => {
     beforeEach(() =>
       truncateDatabase()
         .then(() => encryptPassword('123456'))
-        .then(encriptedPassword =>
-          userFactory.create({ email: 'test@test.test', password: encriptedPassword })
-        )
+        .then(encriptedPassword => userFactory.create({ userName: 'testUN', password: encriptedPassword }))
         .then(createdUser => (user = createdUser))
     );
 
@@ -232,7 +214,7 @@ describe('POST /users/sessions', () => {
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
-        body: { email: user.email, password: '123456' }
+        body: { username: user.userName, password: '123456' }
       }).then(response => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('token');
