@@ -45,14 +45,16 @@ describe('GET /users/:username', () => {
       lastName: 'ln1',
       birthdate: '2020-03-09',
       userName: 'un1',
-      email: 'test1@test.test'
+      email: 'test1@test.test',
+      profileImgUrl: 'www.some-image1.test'
     };
     const userData2 = {
       firstName: 'fn2',
       lastName: 'ln2',
       birthdate: '1999-06-22',
       userName: 'un2',
-      email: 'test2@test.test'
+      email: 'test2@test.test',
+      profileImgUrl: 'www.some-image2.test'
     };
     beforeEach(() =>
       truncateDatabase()
@@ -70,6 +72,7 @@ describe('GET /users/:username', () => {
         expect(res.body).toStrictEqual({
           first_name: userData1.firstName,
           last_name: userData1.lastName,
+          profile_img_url: userData1.profileImgUrl,
           birthdate: userData1.birthdate,
           user_name: userData1.userName,
           email: userData1.email
@@ -85,6 +88,7 @@ describe('GET /users/:username', () => {
         expect(res.body).toStrictEqual({
           first_name: userData2.firstName,
           last_name: userData2.lastName,
+          profile_img_url: userData2.profileImgUrl,
           birthdate: userData2.birthdate,
           user_name: userData2.userName,
           email: userData2.email
@@ -113,14 +117,16 @@ describe('GET /users for admins', () => {
       lastName: 'ln1',
       birthdate: '2020-03-09',
       userName: 'un1',
-      email: 'test1@test.test'
+      email: 'test1@test.test',
+      profileImgUrl: 'www.some-image1.test'
     };
     const userData2 = {
       firstName: 'fn2',
       lastName: 'ln2',
       birthdate: '1999-05-22',
       userName: 'un2',
-      email: 'test2@test.test'
+      email: 'test2@test.test',
+      profileImgUrl: 'www.some-image2.test'
     };
     beforeEach(() =>
       truncateDatabase()
@@ -133,6 +139,7 @@ describe('GET /users for admins', () => {
         expect(res.body[0]).toStrictEqual({
           first_name: userData1.firstName,
           last_name: userData1.lastName,
+          profile_img_url: userData1.profileImgUrl,
           birthdate: userData1.birthdate,
           email: userData1.email,
           user_name: userData1.userName
@@ -140,6 +147,7 @@ describe('GET /users for admins', () => {
         expect(res.body[1]).toStrictEqual({
           first_name: userData2.firstName,
           last_name: userData2.lastName,
+          profile_img_url: userData2.profileImgUrl,
           birthdate: userData2.birthdate,
           email: userData2.email,
           user_name: userData2.userName

@@ -14,7 +14,8 @@ describe('PUT /users/me to update profile', () => {
     first_name: 'MyNewFirstName',
     last_name: 'MyNewLastName',
     email: 'newEmail@test.com',
-    birthdate: '1995-07-22'
+    birthdate: '1995-07-22',
+    profile_img_url: 'www.some-image.test'
   };
   describe('Missing or invalid params', () => {
     it('Should be status 400 if auth token header is missing', () =>
@@ -166,6 +167,7 @@ describe('PUT /users/me to update profile', () => {
             expect(res.body).toStrictEqual({
               first_name: updatedUserData.first_name,
               last_name: updatedUserData.last_name,
+              profile_img_url: updatedUserData.profile_img_url,
               birthdate: updatedUserData.birthdate,
               email: updatedUserData.email,
               user_name: userData.userName
