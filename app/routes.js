@@ -40,3 +40,5 @@ exports.init = app => {
   app.put('/users/me', [validateSchema(updateProfileSchema), validateTokenAndLoadUsername], updateProfile);
   app.get('/users', [validateSchema(getUsersSchema), validateToken, checkPrivileges], getUsers);
 };
+
+console.log('a');
