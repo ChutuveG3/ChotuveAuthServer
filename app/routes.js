@@ -13,7 +13,8 @@ const {
   createUserSessionSchema,
   checkUser,
   viewProfileSchema,
-  updateProfileSchema
+  updateProfileSchema,
+  validateUser
 } = require('./middlewares/users');
 const {
   createAdminSchema,
@@ -37,7 +38,11 @@ exports.init = app => {
     getUser
   );
   app.get('/users/:username', [validateSchema(viewProfileSchema), validateToken], viewProfile);
-  app.put('/users/me', [validateSchema(updateProfileSchema), validateTokenAndLoadUsername], updateProfile);
+  app.put(
+    '/users/:username',
+    [validateSchema(updateProfileSchema), validateTokenAndLoadUsername, validateUser],
+    updateProfile
+  );
   app.get('/users', [validateSchema(getUsersSchema), validateToken, checkPrivileges], getUsers);
 };
 

@@ -2,7 +2,7 @@ const { getResponse, truncateDatabase } = require('../setup');
 const { generateToken } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
 
-const updateProfileBaseUrl = '/users/me';
+const updateProfileBaseUrl = username => `/users/${username}`;
 const viewProfileBaseUrl = '/users';
 
 const authHeader = {
@@ -21,7 +21,7 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if auth token header is missing', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: updatedUserData
       }).then(res => {
         expect(res.status).toBe(400);
@@ -35,7 +35,7 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.first_name;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -50,7 +50,7 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.last_name;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -65,7 +65,7 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.email;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -80,7 +80,7 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.birthdate;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
         header: authHeader
       }).then(res => {
@@ -93,7 +93,7 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if all the body is missing', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         header: authHeader
       }).then(res => {
         expect(res.status).toBe(400);
@@ -103,7 +103,7 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if email is invalid', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: { ...updatedUserData, email: 'notanemail.com' },
         header: authHeader
       }).then(res => {
@@ -116,7 +116,7 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if birthdate is invalid', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: { ...updatedUserData, birthdate: '4/6/95' },
         header: authHeader
       }).then(res => {
@@ -150,7 +150,7 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 200 if update was successful', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl(userData.userName),
         body: updatedUserData,
         header: { authorization: validToken }
       })
@@ -177,7 +177,7 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if token email is already in use by another user', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl(userData.userName),
         body: { ...updatedUserData, email: 'test2@test.test' },
         header: { authorization: validToken }
       }).then(res => {
