@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { getUserFromUsername } = require('../services/users');
-const { passwordMismatch } = require('../errors');
+const { passwordMismatch, userMismatchError } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
 
@@ -116,4 +116,9 @@ exports.updateProfileSchema = {
     isURL: true,
     errorMessage: 'profile_image_url should be a string'
   }
+};
+
+exports.validateUser = ({ username, params: { username: pathUsername } }, res, next) => {
+  if (username !== pathUsername) return next(userMismatchError('Token user does not match route user'));
+  return next();
 };
