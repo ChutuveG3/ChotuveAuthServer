@@ -44,3 +44,6 @@ exports.unauthorized = message => internalError(message, exports.UNAUTHORIZED);
 
 exports.USER_MISMATCH_ERROR = 'user_mismatch_error';
 exports.userMismatchError = message => internalError(message, exports.USER_MISMATCH_ERROR);
+
+exports.SERVER_ALREADY_REGISTERED = 'server_already_registered';
+exports.serverAlreadyRegistered = message => internalError(message, exports.SERVER_ALREADY_REGISTERED);

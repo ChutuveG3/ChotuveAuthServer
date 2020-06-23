@@ -2,6 +2,7 @@ const { healthCheck } = require('./controllers/healthCheck');
 const { home, endWithPrivilege } = require('./controllers/home');
 const { signUp, login, viewProfile, getUser, updateProfile } = require('./controllers/users');
 const { signUpAdmin, loginAdmin, getUsers } = require('./controllers/admins');
+const { registerServer } = require('./controllers/servers');
 const {
   validateToken,
   validateTokenAndLoadUsername,
@@ -22,6 +23,7 @@ const {
   checkAdmin,
   getUsersSchema
 } = require('./middlewares/admins');
+const { registerServerSchema } = require('./middlewares/servers');
 const { validateSchema } = require('./middlewares/params_validator');
 
 exports.init = app => {
@@ -48,4 +50,9 @@ exports.init = app => {
     updateProfile
   );
   app.get('/users', [validateSchema(getUsersSchema), validateToken, checkPrivileges], getUsers);
+  app.post(
+    '/servers',
+    [validateSchema(registerServerSchema), validateToken, checkPrivileges],
+    registerServer
+  );
 };
