@@ -29,7 +29,7 @@ exports.authorizationSchema = {
   }
 };
 
-exports.checkPrivileges = (req, res, next) => {
-  if (!req.privilege) next(unauthorized('You do not have the privileges to perform this operation'));
+exports.checkPrivileges = ({ privilege }, res, next) => {
+  if (!privilege) return next(unauthorized('You do not have the privileges to perform this operation'));
   return next();
 };

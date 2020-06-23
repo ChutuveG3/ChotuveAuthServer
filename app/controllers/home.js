@@ -3,3 +3,5 @@ exports.home = (req, res) => {
 };
 
 exports.end = (req, res) => res.status(200).end();
+
+exports.endWithPrivilege = (req, res) => res.status(200).send({ privilege: req.privilege });
