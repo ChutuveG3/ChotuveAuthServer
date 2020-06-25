@@ -8,11 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      server: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-        field: 'server'
+        field: 'name'
       },
       apiKey: {
         type: Sequelize.STRING,

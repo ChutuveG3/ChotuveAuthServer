@@ -36,8 +36,9 @@ describe('POST /servers', () => {
       }));
   });
   describe('Valid or invalid operations', () => {
+    const registeredServerData2 = { name: 'chomail app server' };
     beforeEach(() =>
-      truncateDatabase().then(() => serverFactory.create({ ...serverData2, apiKey: '123456' }))
+      truncateDatabase().then(() => serverFactory.create({ ...registeredServerData2, apiKey: '123456' }))
     );
     it('Should be status code 201 if server entry is successfully created', () =>
       getResponse({

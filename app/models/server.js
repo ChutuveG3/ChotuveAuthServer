@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Server = sequelize.define(
     'Server',
     {
-      server: { type: DataTypes.STRING, allowNull: false, unique: true },
+      name: { type: DataTypes.STRING, allowNull: false, unique: true },
       apiKey: { type: DataTypes.STRING, allowNull: false, unique: true }
     },
     { underscored: true, tableName: 'servers' }
