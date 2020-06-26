@@ -47,3 +47,6 @@ exports.userMismatchError = message => internalError(message, exports.USER_MISMA
 
 exports.SERVER_ALREADY_REGISTERED = 'server_already_registered';
 exports.serverAlreadyRegistered = message => internalError(message, exports.SERVER_ALREADY_REGISTERED);
+
+exports.INVALID_API_KEY_ERROR = 'invalid_api_key_error';
+exports.invalidApiKeyError = message => internalError(message, exports.INVALID_API_KEY_ERROR);
