@@ -22,6 +22,7 @@ exports.apiKeySchema = {
   x_api_key: {
     in: ['headers'],
     isString: true,
+    optional: false,
     errorMessage: 'api key should be a string and be present in headers'
   }
 };
@@ -34,7 +35,7 @@ exports.validateApiKey = ({ headers: { x_api_key: apiKey } }, res, next) => {
       throw databaseError(`Could not get server. Error: ${dbError}`);
     })
     .then(server => {
-      if (!server) throw invalidApiKeyError('AAAA');
+      if (!server) throw invalidApiKeyError('Invalid Api Key');
       return next();
     })
     .catch(next);
