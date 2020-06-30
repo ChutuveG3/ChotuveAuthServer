@@ -2,6 +2,7 @@ const cryptoRandomString = require('crypto-random-string');
 const { Server } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, serverAlreadyRegistered } = require('../errors');
+const { API_KEY_LENGTH, API_KEY_TYPE } = require('../utils/servers');
 
 const getServerFromName = serverName => {
   info(`Getting server with with name: ${serverName} `);
@@ -14,7 +15,7 @@ const getServerFromName = serverName => {
 exports.registerServer = serverData =>
   getServerFromName(serverData.name).then(server => {
     if (server) throw serverAlreadyRegistered('Server is already registered');
-    const apiKey = cryptoRandomString({ length: 64, type: 'base64' });
+    const apiKey = cryptoRandomString({ length: API_KEY_LENGTH, type: API_KEY_TYPE });
     return Server.create({ ...serverData, apiKey })
       .then(() => apiKey)
       .catch(dbError => {
