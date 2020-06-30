@@ -1,15 +1,23 @@
 const { getResponse, truncateDatabase } = require('../setup');
 const { generateToken } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
+const serverFactory = require('../factory/servers');
 
 describe('GET /users/:username', () => {
   const baseUrl = '/users';
   const username = 'un';
   const validToken = generateToken({ data: username, privilege: false });
+  const validApiKey = 'API-KEY';
+  const registeredServerData = { name: 'chotuve app server', apiKey: validApiKey };
 
   describe('Missing parameters', () => {
+    beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
     it('Should be status 400 if auth token header is missing', () =>
-      getResponse({ endpoint: `${baseUrl}/${username}`, method: 'get' }).then(res => {
+      getResponse({
+        endpoint: `${baseUrl}/${username}`,
+        method: 'get',
+        header: { x_api_key: validApiKey }
+      }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
         expect(res.body.message.errors[0].param).toBe('authorization');
@@ -17,23 +25,24 @@ describe('GET /users/:username', () => {
       }));
   });
   describe('Invalid token', () => {
+    beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
     it('Check status code and internal code', () =>
       getResponse({
         endpoint: `${baseUrl}/${username}`,
         method: 'get',
-        header: { authorization: 'pepe' }
+        header: { authorization: 'pepe', x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(401);
         expect(res.body.internal_code).toBe('invalid_token_error');
       }));
   });
   describe('User does not exist', () => {
-    beforeEach(() => truncateDatabase);
+    beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
     it('Check status code and internal code', () =>
       getResponse({
         endpoint: `${baseUrl}/${username}`,
         method: 'get',
-        header: { authorization: validToken }
+        header: { authorization: validToken, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(409);
         expect(res.body.internal_code).toBe('user_not_exists');
@@ -60,13 +69,14 @@ describe('GET /users/:username', () => {
       truncateDatabase()
         .then(() => userFactory.create({ ...userData1, password: '123456' }))
         .then(() => userFactory.create({ ...userData2, password: '123456' }))
+        .then(() => serverFactory.create(registeredServerData))
     );
 
     it('Check status code and own user data', () =>
       getResponse({
         endpoint: `${baseUrl}/${userData1.userName}`,
         method: 'get',
-        header: { authorization: validToken }
+        header: { authorization: validToken, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(200);
         expect(res.body).toStrictEqual({
@@ -82,7 +92,7 @@ describe('GET /users/:username', () => {
       getResponse({
         endpoint: `${baseUrl}/${userData2.userName}`,
         method: 'get',
-        header: { authorization: validToken }
+        header: { authorization: validToken, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(200);
         expect(res.body).toStrictEqual({

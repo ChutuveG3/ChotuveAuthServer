@@ -9,4 +9,4 @@ exports.getCurrentUserSerializer = user => ({
   profile_img_url: user.profileImgUrl
 });
 
-exports.getUsersSerializer = users => users.map(user => module.exports.getCurrentUserSerializer(user));
+exports.getUsersSerializer = users => users.map(user => exports.getCurrentUserSerializer(user));

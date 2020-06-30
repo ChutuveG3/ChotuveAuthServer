@@ -1,9 +1,14 @@
 const { Op } = require('sequelize');
 const { User } = require('../models');
 const { info, error } = require('../logger');
-const { databaseError, userEmailAlreadyExists, userNameAlreadyExists, jwtError } = require('../errors');
+const {
+  databaseError,
+  userEmailAlreadyExists,
+  userNameAlreadyExists,
+  userNotExists,
+  jwtError
+} = require('../errors');
 const { generateToken } = require('../services/jwt');
-const { userNotExists } = require('../errors');
 
 exports.createUser = userData => {
   info(`Creating user in db with email: ${userData.email}`);

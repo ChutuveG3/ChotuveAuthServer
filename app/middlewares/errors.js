@@ -16,7 +16,9 @@ const statusCodes = {
   [errors.ADMIN_NOT_EXISTS]: 409,
   [errors.INVALID_TOKEN_ERROR]: 401,
   [errors.UNAUTHORIZED]: 403,
-  [errors.USER_MISMATCH_ERROR]: 400
+  [errors.USER_MISMATCH_ERROR]: 400,
+  [errors.SERVER_ALREADY_REGISTERED]: 409,
+  [errors.INVALID_API_KEY_ERROR]: 401
 };
 
 exports.handle = (error, req, res, next) => {

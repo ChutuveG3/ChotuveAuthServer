@@ -3,8 +3,10 @@ const { getUserFromUsername } = require('../services/users');
 const { passwordMismatch, userMismatchError } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
+const { apiKeySchema } = require('./servers');
 
 exports.createUserSchema = {
+  ...apiKeySchema,
   first_name: {
     in: ['body'],
     isString: true,
@@ -47,6 +49,7 @@ exports.createUserSchema = {
 };
 
 exports.createUserSessionSchema = {
+  ...apiKeySchema,
   username: {
     in: ['body'],
     isString: true,
@@ -72,6 +75,7 @@ exports.checkUser = ({ body }, res, next) =>
     .catch(next);
 
 exports.viewProfileSchema = {
+  ...apiKeySchema,
   ...authorizationSchema,
   username: {
     in: ['params'],
@@ -82,6 +86,7 @@ exports.viewProfileSchema = {
 };
 
 exports.updateProfileSchema = {
+  ...apiKeySchema,
   ...authorizationSchema,
   first_name: {
     in: ['body'],
