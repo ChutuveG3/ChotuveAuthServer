@@ -11,7 +11,7 @@
     "cover": "npm run test -- --coverage",
     "test": "NODE_ENV=testing jest --runInBand --forceExit --detectOpenHandles",
     "test-inspect": "NODE_ENV=testing node --inspect --debug-brk jest",
-    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
+    "coveralls": "npm run cover && cat ./coverage/lcov.info | coveralls",
     "eslint-check": "eslint --print-config .eslintrc.js --ignore-pattern ./.eslintrc.js | eslint-config-prettier-check",
     "lint": "eslint \"**/*.js\" --ignore-pattern ./.eslintrc.js",
     "lint-diff": "git diff --diff-filter=ACM --name-only --cached --relative | grep \\\\.js$ | xargs eslint",
@@ -42,14 +42,7 @@
     "email": "tls@wolox.com.ar"
   },
   "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": 80
-      }
-    },
+    "coverageThreshold": {},
     "collectCoverageFrom": [
       "**/*.js",
       "!**/console.js",
@@ -73,6 +66,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "cors": "^2.8.5",
+    "crypto-random-string": "^3.2.0",
     "express": "^4.16.2",
     "express-validator": "^6.4.1",
     "express-wolox-logger": "^2.0.0",

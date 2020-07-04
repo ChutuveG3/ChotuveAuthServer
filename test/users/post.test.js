@@ -1,10 +1,13 @@
 /* eslint-disable max-lines */
 const { getResponse, truncateDatabase } = require('../setup');
 const userFactory = require('../factory/users');
+const serverFactory = require('../factory/servers');
 const { encryptPassword } = require('../../app/services/bcrypt');
 
 const baseUrl = '/users';
 const sessionsUrl = '/users/sessions';
+const validApiKey = 'API-KEY';
+const registeredServerData = { name: 'chotuve app server', apiKey: validApiKey };
 
 describe('POST /users', () => {
   const userData = {
@@ -26,7 +29,12 @@ describe('POST /users', () => {
 
   describe('Missing and invalid parameters', () => {
     it('Should be status 400 if first_name is missing', () =>
-      getResponse({ method: 'post', endpoint: baseUrl, body: userDataMissingParam }).then(res => {
+      getResponse({
+        method: 'post',
+        endpoint: baseUrl,
+        body: userDataMissingParam,
+        header: { x_api_key: validApiKey }
+      }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
         expect(res.body.message.errors[0].param).toBe('first_name');
@@ -34,7 +42,12 @@ describe('POST /users', () => {
       }));
 
     it('Should be status 400 if multiple parameters are missing', () =>
-      getResponse({ method: 'post', endpoint: baseUrl, body: { last_name: 'ln' } }).then(res => {
+      getResponse({
+        method: 'post',
+        endpoint: baseUrl,
+        body: { last_name: 'ln' },
+        header: { x_api_key: validApiKey }
+      }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(6);
         expect(res.body.internal_code).toBe('invalid_params');
@@ -44,7 +57,8 @@ describe('POST /users', () => {
       getResponse({
         method: 'post',
         endpoint: baseUrl,
-        body: { ...userData, birthdate: 'invalid birthdate' }
+        body: { ...userData, birthdate: 'invalid birthdate' },
+        header: { x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -56,7 +70,8 @@ describe('POST /users', () => {
       getResponse({
         method: 'post',
         endpoint: baseUrl,
-        body: { ...userData, email: 'invalid email' }
+        body: { ...userData, email: 'invalid email' },
+        header: { x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -68,7 +83,8 @@ describe('POST /users', () => {
       getResponse({
         method: 'post',
         endpoint: baseUrl,
-        body: { ...userData, user_name: 5 }
+        body: { ...userData, user_name: 5 },
+        header: { x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -81,7 +97,8 @@ describe('POST /users', () => {
         getResponse({
           method: 'post',
           endpoint: baseUrl,
-          body: { ...userData, password: 'aaaa' }
+          body: { ...userData, password: 'aaaa' },
+          header: { x_api_key: validApiKey }
         }).then(res => {
           expect(res.status).toBe(400);
           expect(res.body.message.errors).toHaveLength(1);
@@ -92,8 +109,14 @@ describe('POST /users', () => {
   });
 
   describe('User created', () => {
+    beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
     it('Correct creation, check status code', () =>
-      getResponse({ method: 'post', endpoint: baseUrl, body: userData }).then(res => {
+      getResponse({
+        method: 'post',
+        endpoint: baseUrl,
+        body: userData,
+        header: { x_api_key: validApiKey }
+      }).then(res => {
         expect(res.status).toBe(201);
       }));
   });
@@ -102,18 +125,22 @@ describe('POST /users', () => {
     let user = {};
     beforeEach(() =>
       truncateDatabase()
+        .then(() => serverFactory.create(registeredServerData))
         .then(() => userFactory.create({ email: 'test@test.test' }))
         .then(createdUser => (user = createdUser))
     );
 
     describe('Create user with repeated email', () => {
       it('Check status code and internal code', () =>
-        getResponse({ method: 'post', endpoint: baseUrl, body: { ...userData, email: user.email } }).then(
-          res => {
-            expect(res.status).toBe(400);
-            expect(res.body.internal_code).toBe('user_email_already_exists');
-          }
-        ));
+        getResponse({
+          method: 'post',
+          endpoint: baseUrl,
+          body: { ...userData, email: user.email },
+          header: { x_api_key: validApiKey }
+        }).then(res => {
+          expect(res.status).toBe(400);
+          expect(res.body.internal_code).toBe('user_email_already_exists');
+        }));
     });
 
     describe('Create user with repeated username', () => {
@@ -121,7 +148,8 @@ describe('POST /users', () => {
         getResponse({
           method: 'post',
           endpoint: baseUrl,
-          body: { ...userData, user_name: user.userName }
+          body: { ...userData, user_name: user.userName },
+          header: { x_api_key: validApiKey }
         }).then(res => {
           expect(res.status).toBe(400);
           expect(res.body.internal_code).toBe('user_name_already_exists');
@@ -132,18 +160,23 @@ describe('POST /users', () => {
 
 describe('POST /users/sessions', () => {
   const userData = {
-    email: 'test@test.com',
+    username: 'MyUN',
     password: 'MyPassword'
   };
 
   describe('Missing parameters', () => {
-    it('Should be status 400 if email is missing', () => {
+    it('Should be status 400 if username is missing', () => {
       const currentUserData = { ...userData };
-      delete currentUserData.email;
-      return getResponse({ method: 'post', endpoint: sessionsUrl, body: currentUserData }).then(res => {
+      delete currentUserData.username;
+      return getResponse({
+        method: 'post',
+        endpoint: sessionsUrl,
+        body: currentUserData,
+        header: { x_api_key: validApiKey }
+      }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
-        expect(res.body.message.errors[0].param).toBe('email');
+        expect(res.body.message.errors[0].param).toBe('username');
         expect(res.body.internal_code).toBe('invalid_params');
       });
     });
@@ -151,49 +184,52 @@ describe('POST /users/sessions', () => {
     it('Should be status 400 if password is missing', () => {
       const currentUserData = { ...userData };
       delete currentUserData.password;
-      return getResponse({ method: 'post', endpoint: sessionsUrl, body: currentUserData }).then(res => {
+      return getResponse({
+        method: 'post',
+        endpoint: sessionsUrl,
+        body: currentUserData,
+        header: { x_api_key: validApiKey }
+      }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(2);
         expect(res.body.internal_code).toBe('invalid_params');
       });
     });
 
-    it('Should be status 400 if both email and password are missing', () =>
-      getResponse({ method: 'post', endpoint: sessionsUrl, body: {} }).then(res => {
+    it('Should be status 400 if both username and password are missing', () =>
+      getResponse({
+        method: 'post',
+        endpoint: sessionsUrl,
+        body: {},
+        header: { x_api_key: validApiKey }
+      }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(3);
         expect(res.body.internal_code).toBe('invalid_params');
       }));
   });
   describe('Invalid parameters', () => {
-    it('Should be status 400 if email is invalid', () =>
+    it('Should be status 400 if password is shorter than 6 characters', () =>
       getResponse({
         method: 'post',
         endpoint: sessionsUrl,
-        body: { ...userData, email: 'invalid email' }
+        body: { ...userData, password: '1234' },
+        header: { x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
-        expect(res.body.message.errors[0].param).toBe('email');
+        expect(res.body.message.errors[0].param).toBe('password');
         expect(res.body.internal_code).toBe('invalid_params');
       }));
-
-    it('Should be status 400 if password is shorter than 6 characters', () =>
-      getResponse({ method: 'post', endpoint: sessionsUrl, body: { ...userData, password: '1234' } }).then(
-        res => {
-          expect(res.status).toBe(400);
-          expect(res.body.message.errors).toHaveLength(1);
-          expect(res.body.message.errors[0].param).toBe('password');
-          expect(res.body.internal_code).toBe('invalid_params');
-        }
-      ));
   });
-  describe('User does not exists', () => {
+  describe('User does not exist', () => {
+    beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
     it('Check status code and internal code', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
-        body: { email: 'noexiste@noexiste.noexiste', password: 'noexiste' }
+        body: userData,
+        header: { x_api_key: validApiKey }
       }).then(response => {
         expect(response.status).toBe(409);
         expect(response.body.internal_code).toBe('user_not_exists');
@@ -203,7 +239,8 @@ describe('POST /users/sessions', () => {
     let user = {};
     beforeEach(() =>
       truncateDatabase()
-        .then(() => userFactory.create({ email: 'test@test.test', password: '123456' }))
+        .then(() => serverFactory.create(registeredServerData))
+        .then(() => userFactory.create({ userName: 'testUN', password: '123456' }))
         .then(createdUser => (user = createdUser))
     );
 
@@ -211,7 +248,8 @@ describe('POST /users/sessions', () => {
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
-        body: { email: user.email, password: `${user.password}a` }
+        body: { username: user.userName, password: `${user.password}a` },
+        header: { x_api_key: validApiKey }
       }).then(response => {
         expect(response.status).toBe(409);
         expect(response.body.internal_code).toBe('password_mismatch');
@@ -221,10 +259,9 @@ describe('POST /users/sessions', () => {
     let user = {};
     beforeEach(() =>
       truncateDatabase()
+        .then(() => serverFactory.create(registeredServerData))
         .then(() => encryptPassword('123456'))
-        .then(encriptedPassword =>
-          userFactory.create({ email: 'test@test.test', password: encriptedPassword })
-        )
+        .then(encriptedPassword => userFactory.create({ userName: 'testUN', password: encriptedPassword }))
         .then(createdUser => (user = createdUser))
     );
 
@@ -232,7 +269,8 @@ describe('POST /users/sessions', () => {
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
-        body: { email: user.email, password: '123456' }
+        body: { username: user.userName, password: '123456' },
+        header: { x_api_key: validApiKey }
       }).then(response => {
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('token');

@@ -1,9 +1,12 @@
 const { getResponse, truncateDatabase } = require('../setup');
 const userFactory = require('../factory/users');
+const serverFactory = require('../factory/servers');
 const { encryptPassword } = require('../../app/services/bcrypt');
 
 const sessionsUrl = '/users/sessions';
 const validateTokenUrl = '/connect/access_token_validation';
+const validApiKey = 'API-KEY';
+const registeredServerData = { name: 'chotuve app server', apiKey: validApiKey };
 
 describe('GET /connect/access_token_validation', () => {
   describe('Token validation', () => {
@@ -11,16 +14,16 @@ describe('GET /connect/access_token_validation', () => {
     beforeEach(() =>
       truncateDatabase()
         .then(() => encryptPassword('123456'))
-        .then(encriptedPassword =>
-          userFactory.create({ email: 'test@test.test', password: encriptedPassword })
-        )
+        .then(encriptedPassword => userFactory.create({ userName: 'testUN', password: encriptedPassword }))
         .then(createdUser => (user = createdUser))
+        .then(() => serverFactory.create(registeredServerData))
     );
     it('Should be status 200 if token was just created', () =>
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
-        body: { email: user.email, password: '123456' }
+        body: { username: user.userName, password: '123456' },
+        header: { x_api_key: validApiKey }
       }).then(response => {
         getResponse({
           endpoint: validateTokenUrl,

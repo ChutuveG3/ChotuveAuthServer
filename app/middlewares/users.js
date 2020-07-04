@@ -1,10 +1,12 @@
 const moment = require('moment');
-const { getUserFromEmail } = require('../services/users');
-const { passwordMismatch } = require('../errors');
+const { getUserFromUsername } = require('../services/users');
+const { passwordMismatch, userMismatchError } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
+const { apiKeySchema } = require('./servers');
 
 exports.createUserSchema = {
+  ...apiKeySchema,
   first_name: {
     in: ['body'],
     isString: true,
@@ -47,11 +49,12 @@ exports.createUserSchema = {
 };
 
 exports.createUserSessionSchema = {
-  email: {
+  ...apiKeySchema,
+  username: {
     in: ['body'],
-    isEmail: true,
+    isString: true,
     optional: false,
-    errorMessage: 'email should be a valid email'
+    errorMessage: 'username should be a string'
   },
   password: {
     in: ['body'],
@@ -63,22 +66,27 @@ exports.createUserSessionSchema = {
 };
 
 exports.checkUser = ({ body }, res, next) =>
-  getUserFromEmail(body.email)
-    .then(user => {
-      body.username = user.userName;
-      return checkPassword(body.password, user.password);
-    })
+  getUserFromUsername(body.username)
+    .then(user => checkPassword(body.password, user.password))
     .then(compareResult => {
       if (compareResult) return next();
-      throw passwordMismatch('Password does not match with that email');
+      throw passwordMismatch('Password does not match with that username');
     })
     .catch(next);
 
-exports.getCurrentUserSchema = {
-  ...authorizationSchema
+exports.viewProfileSchema = {
+  ...apiKeySchema,
+  ...authorizationSchema,
+  username: {
+    in: ['params'],
+    isString: true,
+    optional: false,
+    errorMessage: 'username should be a string'
+  }
 };
 
 exports.updateProfileSchema = {
+  ...apiKeySchema,
   ...authorizationSchema,
   first_name: {
     in: ['body'],
@@ -105,5 +113,17 @@ exports.updateProfileSchema = {
     },
     optional: false,
     errorMessage: 'birthdate should be a valid date'
+  },
+  profile_img_url: {
+    in: ['body'],
+    isString: true,
+    optional: true,
+    isURL: true,
+    errorMessage: 'profile_image_url should be a string'
   }
+};
+
+exports.validateUser = ({ username, params: { username: pathUsername } }, res, next) => {
+  if (username !== pathUsername) return next(userMismatchError('Token user does not match route user'));
+  return next();
 };

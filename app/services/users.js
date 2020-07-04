@@ -1,9 +1,14 @@
 const { Op } = require('sequelize');
 const { User } = require('../models');
 const { info, error } = require('../logger');
-const { databaseError, userEmailAlreadyExists, userNameAlreadyExists, jwtError } = require('../errors');
+const {
+  databaseError,
+  userEmailAlreadyExists,
+  userNameAlreadyExists,
+  userNotExists,
+  jwtError
+} = require('../errors');
 const { generateToken } = require('../services/jwt');
-const { userNotExists } = require('../errors');
 
 exports.createUser = userData => {
   info(`Creating user in db with email: ${userData.email}`);
@@ -27,9 +32,9 @@ exports.createUser = userData => {
     });
 };
 
-exports.login = userData => {
-  info(`Getting session token for user with email: ${userData.email}`);
-  const token = generateToken({ data: userData.username, privilege: false });
+exports.login = username => {
+  info(`Getting session token for user with username: ${username}`);
+  const token = generateToken({ data: username, privilege: false });
   if (!token) throw jwtError('Token could not be created');
   return Promise.resolve(token);
 };
@@ -71,11 +76,7 @@ exports.updateProfile = (currentUser, userData) =>
         throw userEmailAlreadyExists('User could not be updated. User with that email already exists');
       }
       info('Updating user profile');
-      currentUser.firstName = userData.firstName;
-      currentUser.lastName = userData.lastName;
-      currentUser.email = userData.email;
-      currentUser.birthdate = userData.birthdate;
-      return currentUser.save().catch(dbError => {
+      return User.update(userData, { where: { userName: currentUser.userName } }).catch(dbError => {
         error(`Could not update user. Error: ${dbError}`);
         throw databaseError(`Could not update user. Error: ${dbError}`);
       });

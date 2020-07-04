@@ -1,9 +1,12 @@
 const { getResponse, truncateDatabase } = require('../setup');
 const { generateToken } = require('../../app/services/jwt');
 const userFactory = require('../factory/users');
+const serverFactory = require('../factory/servers');
 
-const updateProfileBaseUrl = '/users/me';
-const viewProfileBaseUrl = '/users/me';
+const updateProfileBaseUrl = username => `/users/${username}`;
+const viewProfileBaseUrl = '/users';
+const validApiKey = 'API-KEY';
+const registeredServerData = { name: 'chotuve app server', apiKey: validApiKey };
 
 const authHeader = {
   authorization: 'aToken'
@@ -14,14 +17,16 @@ describe('PUT /users/me to update profile', () => {
     first_name: 'MyNewFirstName',
     last_name: 'MyNewLastName',
     email: 'newEmail@test.com',
-    birthdate: '1995-07-22'
+    birthdate: '1995-07-22',
+    profile_img_url: 'www.some-image.test'
   };
   describe('Missing or invalid params', () => {
     it('Should be status 400 if auth token header is missing', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
-        body: updatedUserData
+        endpoint: updateProfileBaseUrl('someUsername'),
+        body: updatedUserData,
+        header: { x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -34,9 +39,9 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.first_name;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
-        header: authHeader
+        header: { ...authHeader, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -49,9 +54,9 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.last_name;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
-        header: authHeader
+        header: { ...authHeader, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -64,9 +69,9 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.email;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
-        header: authHeader
+        header: { ...authHeader, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -79,9 +84,9 @@ describe('PUT /users/me to update profile', () => {
       delete currentUpdateUserData.birthdate;
       return getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: currentUpdateUserData,
-        header: authHeader
+        header: { ...authHeader, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -92,8 +97,8 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if all the body is missing', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
-        header: authHeader
+        endpoint: updateProfileBaseUrl('someUsername'),
+        header: { ...authHeader, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(4);
@@ -102,9 +107,9 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if email is invalid', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: { ...updatedUserData, email: 'notanemail.com' },
-        header: authHeader
+        header: { ...authHeader, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -115,9 +120,9 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if birthdate is invalid', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl('someUsername'),
         body: { ...updatedUserData, birthdate: '4/6/95' },
-        header: authHeader
+        header: { ...authHeader, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.message.errors).toHaveLength(1);
@@ -140,32 +145,34 @@ describe('PUT /users/me to update profile', () => {
       userName: 'un2',
       email: 'test2@test.test'
     };
-    const validToken = generateToken({ data: 'un', privilege: false });
+    const validToken = generateToken({ data: userData.userName, privilege: false });
     beforeEach(() =>
       truncateDatabase()
         .then(() => userFactory.create({ ...userData, password: '123456' }))
         .then(() => userFactory.create({ ...userData2, password: '123456' }))
+        .then(() => serverFactory.create(registeredServerData))
     );
     it('Should be status 200 if update was successful', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl(userData.userName),
         body: updatedUserData,
-        header: { authorization: validToken }
+        header: { authorization: validToken, x_api_key: validApiKey }
       })
         .then(res => {
           expect(res.status).toBe(200);
         })
         .then(() =>
           getResponse({
-            endpoint: viewProfileBaseUrl,
+            endpoint: `${viewProfileBaseUrl}/${userData.userName}`,
             method: 'get',
-            header: { authorization: validToken }
+            header: { authorization: validToken, x_api_key: validApiKey }
           }).then(res => {
             expect(res.status).toBe(200);
             expect(res.body).toStrictEqual({
               first_name: updatedUserData.first_name,
               last_name: updatedUserData.last_name,
+              profile_img_url: updatedUserData.profile_img_url,
               birthdate: updatedUserData.birthdate,
               email: updatedUserData.email,
               user_name: userData.userName
@@ -175,9 +182,9 @@ describe('PUT /users/me to update profile', () => {
     it('Should be status 400 if token email is already in use by another user', () =>
       getResponse({
         method: 'put',
-        endpoint: updateProfileBaseUrl,
+        endpoint: updateProfileBaseUrl(userData.userName),
         body: { ...updatedUserData, email: 'test2@test.test' },
-        header: { authorization: validToken }
+        header: { authorization: validToken, x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
         expect(res.body.internal_code).toBe('user_email_already_exists');

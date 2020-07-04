@@ -41,3 +41,12 @@ exports.invalidTokenError = message => internalError(message, exports.INVALID_TO
 
 exports.UNAUTHORIZED = 'unauthorized';
 exports.unauthorized = message => internalError(message, exports.UNAUTHORIZED);
+
+exports.USER_MISMATCH_ERROR = 'user_mismatch_error';
+exports.userMismatchError = message => internalError(message, exports.USER_MISMATCH_ERROR);
+
+exports.SERVER_ALREADY_REGISTERED = 'server_already_registered';
+exports.serverAlreadyRegistered = message => internalError(message, exports.SERVER_ALREADY_REGISTERED);
+
+exports.INVALID_API_KEY_ERROR = 'invalid_api_key_error';
+exports.invalidApiKeyError = message => internalError(message, exports.INVALID_API_KEY_ERROR);

@@ -5,7 +5,8 @@ exports.getCurrentUserSerializer = user => ({
   last_name: user.lastName,
   user_name: user.userName,
   email: user.email,
-  birthdate: moment(user.birthdate).format('YYYY-MM-DD')
+  birthdate: moment(user.birthdate).format('YYYY-MM-DD'),
+  profile_img_url: user.profileImgUrl
 });
 
-exports.getUsersSerializer = users => users.map(user => module.exports.getCurrentUserSerializer(user));
+exports.getUsersSerializer = users => users.map(user => exports.getCurrentUserSerializer(user));
