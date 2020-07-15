@@ -4,11 +4,11 @@ const { createUserMapper, updateUserMapper } = require('../mappers/users');
 const { getCurrentUserSerializer } = require('../serializers/users');
 
 exports.signUp = ({ special, body }, res, next) => {
-  info(`Creating user with username: ${body.username}`);
+  info(`Creating user with username: ${body.user_name}`);
   const userData = createUserMapper(body);
   return checkMethod(special, body)
     .then(password => createUser({ ...userData, password }))
-    .then(() => login(body.username))
+    .then(() => login(userData.userName))
     .then(token => res.status(201).send({ token }))
     .catch(next);
 };

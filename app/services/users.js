@@ -86,7 +86,7 @@ exports.updateProfile = (currentUser, userData) =>
 exports.checkMethod = (special, body) => {
   if (special) {
     // validate body.firebase_token
-    return null;
+    return Promise.resolve();
   }
   return encryptPassword(body.password);
 };
