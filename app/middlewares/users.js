@@ -59,7 +59,7 @@ exports.createUserSessionSchema = {
   username: {
     in: ['body'],
     isString: true,
-    optional: false,
+    optional: true,
     errorMessage: 'username should be a string'
   },
   password: {
@@ -68,17 +68,29 @@ exports.createUserSessionSchema = {
     isLength: { errorMessage: 'Password should have at least 6 characters', options: { min: 6 } },
     optional: false,
     errorMessage: 'password should be a string'
+  },
+  firebase_token: {
+    in: ['body'],
+    isJWT: true,
+    optional: true,
+    errorMessage: 'firebase_token should be a jwt'
   }
 };
 
-exports.checkUser = ({ body }, res, next) =>
-  getUserFromUsername(body.username)
+exports.checkUser = ({ body }, res, next) => {
+  if (body.special) {
+    // validate body.firebase_token
+    // return getUserFromEmail(email del token).then(user => body.username = user.userName).catch(next);
+    return Promise.resolve();
+  }
+  return getUserFromUsername(body.username)
     .then(user => checkPassword(body.password, user.password))
     .then(compareResult => {
       if (compareResult) return next();
       throw passwordMismatch('Password does not match with that username');
     })
     .catch(next);
+};
 
 exports.viewProfileSchema = {
   ...apiKeySchema,
@@ -134,10 +146,21 @@ exports.validateUser = ({ username, params: { username: pathUsername } }, res, n
   return next();
 };
 
-exports.validateSignUp = (req, res, next) => {
-  if (!req.body.password === !req.body.firebase_token) {
+exports.validateSignUpCredentials = ({ body }, res, next) => {
+  if (!body.password === !body.firebase_token) {
     return next(invalidParams('Password or firebase token must be present'));
   }
-  if (!req.body.password) req.special = true;
+  if (!body.password) body.special = true;
+  return next();
+};
+
+exports.validateLoginCredentials = ({ body }, res, next) => {
+  if (
+    (body.username || body.password || !body.firebase_token) &&
+    (!body.username || !body.password || body.firebase_token)
+  ) {
+    return next(invalidParams('Username and password, or firebase token must be present'));
+  }
+  if (!body.password) body.special = true;
   return next();
 };

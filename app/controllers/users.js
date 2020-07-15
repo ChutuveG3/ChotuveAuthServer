@@ -3,10 +3,10 @@ const { checkMethod, createUser, login, getUserFromUsername, updateProfile } = r
 const { createUserMapper, updateUserMapper } = require('../mappers/users');
 const { getCurrentUserSerializer } = require('../serializers/users');
 
-exports.signUp = ({ special, body }, res, next) => {
+exports.signUp = ({ body }, res, next) => {
   info(`Creating user with username: ${body.user_name}`);
   const userData = createUserMapper(body);
-  return checkMethod(special, body)
+  return checkMethod(body)
     .then(password => createUser({ ...userData, password }))
     .then(() => login(userData.userName))
     .then(token => res.status(201).send({ token }))

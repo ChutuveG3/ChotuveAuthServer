@@ -83,8 +83,8 @@ exports.updateProfile = (currentUser, userData) =>
       });
     });
 
-exports.checkMethod = (special, body) => {
-  if (special) {
+exports.checkMethod = body => {
+  if (body.special) {
     // validate body.firebase_token
     return Promise.resolve();
   }

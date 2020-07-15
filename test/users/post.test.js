@@ -3,6 +3,7 @@ const { getResponse, truncateDatabase } = require('../setup');
 const userFactory = require('../factory/users');
 const serverFactory = require('../factory/servers');
 const { encryptPassword } = require('../../app/services/bcrypt');
+const { SIGNUP_TOKEN } = require('../utils/constants');
 
 const baseUrl = '/users';
 const sessionsUrl = '/users/sessions';
@@ -147,61 +148,16 @@ describe('POST /users', () => {
 });
 
 describe('POST /users/sessions', () => {
-  const userData = {
+  const loginUserData = {
     username: 'MyUN',
     password: 'MyPassword'
   };
-
-  describe('Missing parameters', () => {
-    it('Should be status 400 if username is missing', () => {
-      const currentUserData = { ...userData };
-      delete currentUserData.username;
-      return getResponse({
-        method: 'post',
-        endpoint: sessionsUrl,
-        body: currentUserData,
-        header: { x_api_key: validApiKey }
-      }).then(res => {
-        expect(res.status).toBe(400);
-        expect(res.body.message.errors).toHaveLength(1);
-        expect(res.body.message.errors[0].param).toBe('username');
-        expect(res.body.internal_code).toBe('invalid_params');
-      });
-    });
-
-    it('Should be status 400 if password is missing', () => {
-      const currentUserData = { ...userData };
-      delete currentUserData.password;
-      return getResponse({
-        method: 'post',
-        endpoint: sessionsUrl,
-        body: currentUserData,
-        header: { x_api_key: validApiKey }
-      }).then(res => {
-        expect(res.status).toBe(400);
-        expect(res.body.message.errors).toHaveLength(2);
-        expect(res.body.internal_code).toBe('invalid_params');
-      });
-    });
-
-    it('Should be status 400 if both username and password are missing', () =>
-      getResponse({
-        method: 'post',
-        endpoint: sessionsUrl,
-        body: {},
-        header: { x_api_key: validApiKey }
-      }).then(res => {
-        expect(res.status).toBe(400);
-        expect(res.body.message.errors).toHaveLength(3);
-        expect(res.body.internal_code).toBe('invalid_params');
-      }));
-  });
   describe('Invalid parameters', () => {
     it('Should be status 400 if password is shorter than 6 characters', () =>
       getResponse({
         method: 'post',
         endpoint: sessionsUrl,
-        body: { ...userData, password: '1234' },
+        body: { ...loginUserData, password: '1234' },
         header: { x_api_key: validApiKey }
       }).then(res => {
         expect(res.status).toBe(400);
@@ -209,6 +165,32 @@ describe('POST /users/sessions', () => {
         expect(res.body.message.errors[0].param).toBe('password');
         expect(res.body.internal_code).toBe('invalid_params');
       }));
+    it('Should be status 400 if username is present but not password', () => {
+      const currentLoginUserData = { ...loginUserData };
+      delete currentLoginUserData.password;
+      return getResponse({
+        method: 'post',
+        endpoint: sessionsUrl,
+        body: currentLoginUserData,
+        header: { x_api_key: validApiKey }
+      }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.internal_code).toBe('invalid_params');
+      });
+    });
+    it('Should be status 400 if username, password and firebase token are all present', () => {
+      const currentLoginUserData = { ...loginUserData };
+      delete currentLoginUserData.password;
+      return getResponse({
+        method: 'post',
+        endpoint: sessionsUrl,
+        body: { ...currentLoginUserData, firebase_token: SIGNUP_TOKEN },
+        header: { x_api_key: validApiKey }
+      }).then(res => {
+        expect(res.status).toBe(400);
+        expect(res.body.internal_code).toBe('invalid_params');
+      });
+    });
   });
   describe('User does not exist', () => {
     beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
@@ -216,7 +198,7 @@ describe('POST /users/sessions', () => {
       getResponse({
         endpoint: sessionsUrl,
         method: 'post',
-        body: userData,
+        body: loginUserData,
         header: { x_api_key: validApiKey }
       }).then(response => {
         expect(response.status).toBe(409);
