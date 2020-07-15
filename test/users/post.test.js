@@ -41,18 +41,6 @@ describe('POST /users', () => {
         expect(res.body.internal_code).toBe('invalid_params');
       }));
 
-    it('Should be status 400 if multiple parameters are missing', () =>
-      getResponse({
-        method: 'post',
-        endpoint: baseUrl,
-        body: { last_name: 'ln' },
-        header: { x_api_key: validApiKey }
-      }).then(res => {
-        expect(res.status).toBe(400);
-        expect(res.body.message.errors).toHaveLength(6);
-        expect(res.body.internal_code).toBe('invalid_params');
-      }));
-
     it('Should be status 400 if birthdate is invalid', () =>
       getResponse({
         method: 'post',

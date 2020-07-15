@@ -9,6 +9,7 @@ const {
   jwtError
 } = require('../errors');
 const { generateToken } = require('../services/jwt');
+const { encryptPassword } = require('../services/bcrypt');
 
 exports.createUser = userData => {
   info(`Creating user in db with email: ${userData.email}`);
@@ -81,3 +82,11 @@ exports.updateProfile = (currentUser, userData) =>
         throw databaseError(`Could not update user. Error: ${dbError}`);
       });
     });
+
+exports.checkMethod = (special, body) => {
+  if (special) {
+    // validate body.firebase_token
+    return null;
+  }
+  return encryptPassword(body.password);
+};

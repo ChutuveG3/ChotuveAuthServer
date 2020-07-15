@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { getUserFromUsername } = require('../services/users');
-const { passwordMismatch, userMismatchError } = require('../errors');
+const { invalidParams, passwordMismatch, userMismatchError } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
 const { apiKeySchema } = require('./servers');
@@ -29,8 +29,14 @@ exports.createUserSchema = {
     in: ['body'],
     isString: true,
     isLength: { errorMessage: 'Password should have at least 6 characters', options: { min: 6 } },
-    optional: false,
+    optional: true,
     errorMessage: 'password should be a string'
+  },
+  firebase_token: {
+    in: ['body'],
+    isJWT: true,
+    optional: true,
+    errorMessage: 'firebase_token should be a jwt'
   },
   user_name: {
     in: ['body'],
@@ -125,5 +131,13 @@ exports.updateProfileSchema = {
 
 exports.validateUser = ({ username, params: { username: pathUsername } }, res, next) => {
   if (username !== pathUsername) return next(userMismatchError('Token user does not match route user'));
+  return next();
+};
+
+exports.validateSignUp = (req, res, next) => {
+  if (!req.body.password === !req.body.firebase_token) {
+    return next(invalidParams('Password or firebase token must be present'));
+  }
+  if (!req.body.password) req.special = true;
   return next();
 };

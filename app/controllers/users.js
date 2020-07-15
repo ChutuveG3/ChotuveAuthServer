@@ -1,15 +1,15 @@
 const { info } = require('../logger');
-const { createUser, login, getUserFromUsername, updateProfile } = require('../services/users');
+const { checkMethod, createUser, login, getUserFromUsername, updateProfile } = require('../services/users');
 const { createUserMapper, updateUserMapper } = require('../mappers/users');
-const { encryptPassword } = require('../services/bcrypt');
 const { getCurrentUserSerializer } = require('../serializers/users');
 
-exports.signUp = ({ body }, res, next) => {
-  info(`Creating user with email: ${body.email}`);
+exports.signUp = ({ special, body }, res, next) => {
+  info(`Creating user with username: ${body.username}`);
   const userData = createUserMapper(body);
-  return encryptPassword(userData.password)
+  return checkMethod(special, body)
     .then(password => createUser({ ...userData, password }))
-    .then(() => res.status(201).end())
+    .then(() => login(body.username))
+    .then(token => res.status(201).send({ token }))
     .catch(next);
 };
 
