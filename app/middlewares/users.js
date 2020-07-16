@@ -79,7 +79,7 @@ exports.createUserSessionSchema = {
 };
 
 exports.checkUser = ({ body }, res, next) => {
-  if (body.special) {
+  if (body.firebaseSignUp) {
     return authenticateFirebaseToken(body.firebase_token)
       .then(decodedToken => getUserFromEmail(decodedToken.email))
       .then(user => {
@@ -155,7 +155,7 @@ exports.validateSignUpCredentials = ({ body }, res, next) => {
   if (!body.password === !body.firebase_token) {
     return next(invalidParams('Password or firebase token must be present'));
   }
-  if (!body.password) body.special = true;
+  if (!body.password) body.firebaseSignUp = true;
   return next();
 };
 
@@ -166,6 +166,6 @@ exports.validateLoginCredentials = ({ body }, res, next) => {
   ) {
     return next(invalidParams('Username and password, or firebase token must be present'));
   }
-  if (!body.password) body.special = true;
+  if (!body.password) body.firebaseSignUp = true;
   return next();
 };

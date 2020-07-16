@@ -86,7 +86,7 @@ exports.updateProfile = (currentUser, userData) =>
 
 exports.checkMethod = body => {
   const { password } = body;
-  if (body.special) {
+  if (body.firebaseSignUp) {
     return authenticateFirebaseToken(body.firebase_token).then(() => password);
   }
   return encryptPassword(password);
