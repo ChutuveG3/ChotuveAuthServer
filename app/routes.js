@@ -15,7 +15,9 @@ const {
   checkUser,
   viewProfileSchema,
   updateProfileSchema,
-  validateUser
+  validateUser,
+  validateSignUpCredentials,
+  validateLoginCredentials
 } = require('./middlewares/users');
 const {
   createAdminSchema,
@@ -34,9 +36,13 @@ const { validateSchema } = require('./middlewares/params_validator');
 exports.init = app => {
   app.get('/health', healthCheck);
   app.get('/', [], home);
-  app.post('/users', [validateSchema(createUserSchema), validateApiKey], signUp);
+  app.post('/users', [validateSchema(createUserSchema), validateApiKey, validateSignUpCredentials], signUp);
   app.post('/admins', [validateSchema(createAdminSchema)], signUpAdmin);
-  app.post('/users/sessions', [validateSchema(createUserSessionSchema), validateApiKey, checkUser], login);
+  app.post(
+    '/users/sessions',
+    [validateSchema(createUserSessionSchema), validateApiKey, validateLoginCredentials, checkUser],
+    login
+  );
   app.post('/admins/sessions', [validateSchema(createAdminSessionSchema), checkAdmin], loginAdmin);
   app.get(
     '/connect/access_token_validation',
