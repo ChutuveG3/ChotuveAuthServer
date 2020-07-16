@@ -1,9 +1,10 @@
 const moment = require('moment');
-const { getUserFromUsername } = require('../services/users');
+const { getUserFromUsername, getUserFromEmail } = require('../services/users');
 const { invalidParams, passwordMismatch, userMismatchError } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
 const { apiKeySchema } = require('./servers');
+const { authenticateFirebaseToken } = require('../services/authentication');
 
 exports.createUserSchema = {
   ...apiKeySchema,
@@ -66,7 +67,7 @@ exports.createUserSessionSchema = {
     in: ['body'],
     isString: true,
     isLength: { errorMessage: 'Password should have at least 6 characters', options: { min: 6 } },
-    optional: false,
+    optional: true,
     errorMessage: 'password should be a string'
   },
   firebase_token: {
@@ -79,9 +80,13 @@ exports.createUserSessionSchema = {
 
 exports.checkUser = ({ body }, res, next) => {
   if (body.special) {
-    // validate body.firebase_token
-    // return getUserFromEmail(email del token).then(user => body.username = user.userName).catch(next);
-    return Promise.resolve();
+    return authenticateFirebaseToken(body.firebase_token)
+      .then(decodedToken => getUserFromEmail(decodedToken.email))
+      .then(user => {
+        body.username = user.user_name;
+        return next();
+      })
+      .catch(next);
   }
   return getUserFromUsername(body.username)
     .then(user => checkPassword(body.password, user.password))

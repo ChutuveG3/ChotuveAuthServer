@@ -153,6 +153,7 @@ describe('POST /users/sessions', () => {
     password: 'MyPassword'
   };
   describe('Invalid parameters', () => {
+    beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
     it('Should be status 400 if password is shorter than 6 characters', () =>
       getResponse({
         method: 'post',

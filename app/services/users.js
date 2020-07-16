@@ -10,6 +10,7 @@ const {
 } = require('../errors');
 const { generateToken } = require('../services/jwt');
 const { encryptPassword } = require('../services/bcrypt');
+const { authenticateFirebaseToken } = require('../services/authentication');
 
 exports.createUser = userData => {
   info(`Creating user in db with email: ${userData.email}`);
@@ -84,9 +85,9 @@ exports.updateProfile = (currentUser, userData) =>
     });
 
 exports.checkMethod = body => {
+  const { password } = body;
   if (body.special) {
-    // validate body.firebase_token
-    return Promise.resolve();
+    return authenticateFirebaseToken(body.firebase_token).then(() => password);
   }
-  return encryptPassword(body.password);
+  return encryptPassword(password);
 };

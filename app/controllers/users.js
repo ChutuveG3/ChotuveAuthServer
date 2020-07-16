@@ -8,8 +8,7 @@ exports.signUp = ({ body }, res, next) => {
   const userData = createUserMapper(body);
   return checkMethod(body)
     .then(password => createUser({ ...userData, password }))
-    .then(() => login(userData.userName))
-    .then(token => res.status(201).send({ token }))
+    .then(() => res.status(201).end())
     .catch(next);
 };
 
