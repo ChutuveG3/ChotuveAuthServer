@@ -38,7 +38,7 @@ exports.login = username => {
   info(`Getting session token for user with username: ${username}`);
   const token = generateToken({ data: username, privilege: false });
   if (!token) throw jwtError('Token could not be created');
-  return Promise.resolve(token);
+  return Promise.resolve({ username, token });
 };
 
 exports.getUserFromEmail = email => {
