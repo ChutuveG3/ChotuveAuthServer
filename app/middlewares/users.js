@@ -83,7 +83,7 @@ exports.checkUser = ({ body }, res, next) => {
     return authenticateFirebaseToken(body.firebase_token)
       .then(decodedToken => getUserFromEmail(decodedToken.email))
       .then(user => {
-        body.username = user.user_name;
+        body.username = user.userName;
         return next();
       })
       .catch(next);
