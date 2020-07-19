@@ -1,7 +1,7 @@
 const cryptoRandomString = require('crypto-random-string');
 const { Server } = require('../models');
 const { info, error } = require('../logger');
-const { databaseError, serverAlreadyRegistered } = require('../errors');
+const { databaseError, serverAlreadyRegistered, serverNotExists } = require('../errors');
 const { API_KEY_LENGTH, API_KEY_TYPE } = require('../utils/servers');
 
 const getServerFromName = serverName => {
@@ -28,4 +28,10 @@ exports.getServers = () =>
   Server.findAll({ attributes: ['name', 'created_at', 'api_key'], limit: 50 }).catch(dbError => {
     error(`Could not get servers. Error: ${dbError}`);
     throw databaseError(`Could not get servers. Error: ${dbError}`);
+  });
+
+exports.deleteServer = serverName =>
+  getServerFromName(serverName).then(server => {
+    if (!server) throw serverNotExists(`Server with name ${serverName} does not exist`);
+    return server.destroy();
   });

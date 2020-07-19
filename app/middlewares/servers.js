@@ -39,3 +39,13 @@ exports.validateApiKey = ({ headers: { x_api_key: apiKey } }, res, next) => {
 exports.getServersSchema = {
   ...authorizationSchema
 };
+
+exports.deleteServerSchema = {
+  ...authorizationSchema,
+  name: {
+    in: ['params'],
+    isString: true,
+    optional: false,
+    errorMessage: 'name should be a string'
+  }
+};
