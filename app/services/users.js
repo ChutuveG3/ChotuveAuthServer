@@ -92,8 +92,8 @@ exports.checkMethod = body => {
   return encryptPassword(password);
 };
 
-const deleteUserFromUsername = username =>
-  User.destroy({ where: { userName: username } }).catch(dbError => {
+const deleteUserFromUsername = userName =>
+  User.destroy({ where: { userName } }).catch(dbError => {
     error(`Could not delete user. Error: ${dbError}`);
     throw databaseError(`Could not delete user. Error: ${dbError}`);
   });
