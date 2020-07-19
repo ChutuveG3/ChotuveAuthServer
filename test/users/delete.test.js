@@ -16,17 +16,7 @@ describe('DELETE /users/:username', () => {
   };
   const adminToken = generateToken({ email: 'ad@min.com', privilege: true });
   beforeEach(() => truncateDatabase().then(() => userFactory.create({ ...userData, password: '123456' })));
-
-  it('Should be status 409 if user does not exist', () =>
-    getResponse({
-      method: 'delete',
-      endpoint: deleteUserBaseUrl('NotRegistered'),
-      header: { authorization: adminToken }
-    }).then(res => {
-      expect(res.status).toBe(409);
-      expect(res.body.internal_code).toBe('user_not_exists');
-    }));
-  it('Check status code and own user data', () =>
+  it('Check the user has been deleted successfully', () =>
     getResponse({
       method: 'delete',
       endpoint: deleteUserBaseUrl(userData.userName),
