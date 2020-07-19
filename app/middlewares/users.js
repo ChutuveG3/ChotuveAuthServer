@@ -169,3 +169,13 @@ exports.validateLoginCredentials = ({ body }, res, next) => {
   if (!body.password) body.firebaseSignUp = true;
   return next();
 };
+
+exports.deleteUserSchema = {
+  ...authorizationSchema,
+  username: {
+    in: ['params'],
+    isString: true,
+    optional: false,
+    errorMessage: 'username should be a string'
+  }
+};

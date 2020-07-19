@@ -1,5 +1,12 @@
 const { info } = require('../logger');
-const { checkMethod, createUser, login, getUserFromUsername, updateProfile } = require('../services/users');
+const {
+  checkMethod,
+  createUser,
+  login,
+  getUserFromUsername,
+  updateProfile,
+  deleteUser
+} = require('../services/users');
 const { createUserMapper, updateUserMapper } = require('../mappers/users');
 const { getCurrentUserSerializer } = require('../serializers/users');
 
@@ -36,6 +43,13 @@ exports.updateProfile = (req, res, next) => {
   info(`Updating profile for user: ${req.username}`);
   return getUserFromUsername(req.username)
     .then(currentUser => updateProfile(currentUser, userData))
+    .then(() => res.status(200).end())
+    .catch(next);
+};
+
+exports.deleteUser = ({ params: { username } }, res, next) => {
+  info(`Deleting user with username: ${username}`);
+  return deleteUser(username)
     .then(() => res.status(200).end())
     .catch(next);
 };

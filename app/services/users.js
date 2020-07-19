@@ -91,3 +91,5 @@ exports.checkMethod = body => {
   }
   return encryptPassword(password);
 };
+
+exports.deleteUser = username => exports.getUserFromUsername(username).then(user => user.destroy());

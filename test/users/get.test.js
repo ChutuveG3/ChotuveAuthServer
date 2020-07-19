@@ -146,7 +146,7 @@ describe('GET /users for admins', () => {
     it('Should be status 200 and have user data in response', () =>
       getResponse({ endpoint: baseUrl, method: 'get', header: { authorization: validToken } }).then(res => {
         expect(res.status).toBe(200);
-        expect(res.body[0]).toStrictEqual({
+        expect(res.body.users[0]).toStrictEqual({
           first_name: userData1.firstName,
           last_name: userData1.lastName,
           profile_img_url: userData1.profileImgUrl,
@@ -154,7 +154,7 @@ describe('GET /users for admins', () => {
           email: userData1.email,
           user_name: userData1.userName
         });
-        expect(res.body[1]).toStrictEqual({
+        expect(res.body.users[1]).toStrictEqual({
           first_name: userData2.firstName,
           last_name: userData2.lastName,
           profile_img_url: userData2.profileImgUrl,
