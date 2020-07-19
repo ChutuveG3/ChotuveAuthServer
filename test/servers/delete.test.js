@@ -11,15 +11,6 @@ const adminToken = generateToken({ data: 'ad@min.com', privilege: true });
 
 describe('DELETE /servers/:name', () => {
   beforeEach(() => truncateDatabase().then(() => serverFactory.create(registeredServerData)));
-  it('Should set status code to 409 if server does not exist', () =>
-    getResponse({
-      method: 'delete',
-      endpoint: deleteServerBaseUrl('another server'),
-      header: { authorization: adminToken }
-    }).then(res => {
-      expect(res.status).toBe(409);
-      expect(res.body.internal_code).toBe('server_not_exists');
-    }));
   it('Should set status code to 200 and be deleted successfully', () =>
     getResponse({
       method: 'delete',

@@ -50,6 +50,3 @@ exports.serverAlreadyRegistered = message => internalError(message, exports.SERV
 
 exports.INVALID_API_KEY_ERROR = 'invalid_api_key_error';
 exports.invalidApiKeyError = message => internalError(message, exports.INVALID_API_KEY_ERROR);
-
-exports.SERVER_NOT_EXISTS = 'server_not_exists';
-exports.serverNotExists = message => internalError(message, exports.SERVER_NOT_EXISTS);
