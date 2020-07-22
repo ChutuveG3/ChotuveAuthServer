@@ -2,7 +2,7 @@ const { healthCheck } = require('./controllers/healthCheck');
 const { home, end, endWithPrivilege } = require('./controllers/home');
 const { signUp, login, viewProfile, getUser, updateProfile } = require('./controllers/users');
 const { signUpAdmin, loginAdmin, getUsers } = require('./controllers/admins');
-const { registerServer, getServers } = require('./controllers/servers');
+const { registerServer, getServers, deleteServer } = require('./controllers/servers');
 const {
   validateToken,
   validateTokenAndLoadUsername,
@@ -29,7 +29,8 @@ const {
   registerServerSchema,
   validateApiKey,
   apiKeySchema,
-  getServersSchema
+  getServersSchema,
+  deleteServerSchema
 } = require('./middlewares/servers');
 const { validateSchema } = require('./middlewares/params_validator');
 
@@ -72,4 +73,9 @@ exports.init = app => {
   );
   app.get('/connect/api_key_validation', [validateSchema(apiKeySchema), validateApiKey], end);
   app.get('/servers', [validateSchema(getServersSchema), validateToken, checkPrivileges], getServers);
+  app.delete(
+    '/servers/:name',
+    [validateSchema(deleteServerSchema), validateToken, checkPrivileges],
+    deleteServer
+  );
 };
