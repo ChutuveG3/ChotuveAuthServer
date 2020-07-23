@@ -1,5 +1,6 @@
 const { decodeToken } = require('../services/jwt');
 const { unauthorized } = require('../errors');
+const { apiKeySchema } = require('./servers');
 
 exports.validateTokenAndLoadUsername = (req, res, next) => {
   try {
@@ -32,4 +33,14 @@ exports.authorizationSchema = {
 exports.checkPrivileges = ({ privilege }, res, next) => {
   if (!privilege) return next(unauthorized('You do not have the privileges to perform this operation'));
   return next();
+};
+
+exports.createRecoveryTokenSchema = {
+  ...apiKeySchema,
+  email: {
+    in: ['body'],
+    isEmail: true,
+    optional: false,
+    errorMessage: 'email should be a valid email'
+  }
 };

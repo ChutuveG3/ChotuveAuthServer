@@ -179,3 +179,11 @@ exports.deleteUserSchema = {
     errorMessage: 'username should be a string'
   }
 };
+
+exports.checkEmail = (req, res, next) =>
+  getUserFromEmail(req.body.email)
+    .then(user => {
+      req.user = user;
+      return next();
+    })
+    .catch(next);
