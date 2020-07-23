@@ -89,7 +89,7 @@ exports.init = app => {
   );
   app.post(
     '/sessions/password_recovery',
-    [validateSchema(createRecoveryTokenSchema), checkEmail],
+    [validateSchema(createRecoveryTokenSchema), validateApiKey, checkEmail],
     createRecoveryToken
   );
 };
