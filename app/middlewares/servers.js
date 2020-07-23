@@ -1,7 +1,14 @@
 const { Server } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, invalidApiKeyError } = require('../errors');
-const { authorizationSchema } = require('./sessions');
+
+const authorizationSchema = {
+  authorization: {
+    in: ['headers'],
+    isString: true,
+    errorMessage: 'authorization should be a string and be present in headers'
+  }
+};
 
 exports.registerServerSchema = {
   ...authorizationSchema,

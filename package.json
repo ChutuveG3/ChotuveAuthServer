@@ -50,7 +50,11 @@
       "!**/build/**",
       "!**/migrations/**",
       "!**/config/**",
-      "!**/scripts/**"
+      "!**/scripts/**",
+      "!**/email_generator.js/**",
+      "!**/server.js/**",
+      "!**/apiInfo.js/**",
+      "!**/coverage/**"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/setup.js"

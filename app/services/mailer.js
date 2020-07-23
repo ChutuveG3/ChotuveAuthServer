@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const { error, info } = require('../logger');
-const { generateRecoveryEmail } = require('../utils/emailGenerator');
+const { generateRecoveryEmail } = require('../utils/email_generator');
 const {
   recovery: { senderEmail, senderPassword, subject }
 } = require('../../config').common;
