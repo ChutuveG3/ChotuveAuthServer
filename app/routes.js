@@ -42,7 +42,7 @@ const { createRecoveryToken, modifyPasword } = require('./controllers/sessions')
 exports.init = app => {
   app.get('/health', healthCheck);
   app.get('/', [], home);
-  app.post('/users', [validateSchema(createUserSchema), validateApiKey, validateSignUpCredentials], signUp);
+  app.post('/users', [validateSchema(createUserSchema), validateSignUpCredentials], signUp);
   app.post('/admins', [validateSchema(createAdminSchema)], signUpAdmin);
   app.post(
     '/users/sessions',
@@ -90,13 +90,9 @@ exports.init = app => {
   );
   app.post(
     '/sessions/password_recovery',
-    [validateSchema(createRecoveryTokenSchema), validateApiKey, checkEmail],
+    [validateSchema(createRecoveryTokenSchema), checkEmail],
     createRecoveryToken
   );
 
-  app.put(
-    '/sessions/password_configuration',
-    [validateSchema(passwordConfigurationSchema), validateApiKey],
-    modifyPasword
-  );
+  app.put('/sessions/password_configuration', [validateSchema(passwordConfigurationSchema)], modifyPasword);
 };

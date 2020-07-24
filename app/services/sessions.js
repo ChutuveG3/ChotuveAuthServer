@@ -28,7 +28,8 @@ exports.getUsernameFromRecoveryToken = token =>
         error('Recovery token has expired.');
         throw invalidRecoveryToken('Recovery token has expired.');
       }
-      return recoveryToken.username;
+      const { username } = recoveryToken;
+      return RecoveryToken.destroy({ where: { recoveryToken: token } }).then(() => username);
     })
     .catch(dbError => {
       error(`Could not get username from recovery token. Error: ${dbError}`);
