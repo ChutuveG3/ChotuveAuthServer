@@ -99,3 +99,19 @@ const deleteUserFromUsername = userName =>
   });
 
 exports.deleteUser = username => deleteUserFromUsername(username);
+
+exports.changeUserPassword = (username, password) =>
+  User.findOne({ where: { userName: username } })
+    .catch(dbError => {
+      error(`Could not get user. Error: ${dbError}`);
+      throw databaseError(`Could not get user. Error: ${dbError}`);
+    })
+    .then(user =>
+      encryptPassword(password).then(encryptedPassword =>
+        user.update({ password: encryptedPassword }, { where: { userName: username } })
+      )
+    )
+    .catch(dbError => {
+      error(`Could not update user. Error: ${dbError}`);
+      throw databaseError(`Could not update user. Error: ${dbError}`);
+    });

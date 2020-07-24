@@ -18,7 +18,8 @@ const statusCodes = {
   [errors.UNAUTHORIZED]: 403,
   [errors.USER_MISMATCH_ERROR]: 400,
   [errors.SERVER_ALREADY_REGISTERED]: 409,
-  [errors.INVALID_API_KEY_ERROR]: 401
+  [errors.INVALID_API_KEY_ERROR]: 401,
+  [errors.INVALID_RECOVERY_TOKEN]: 409
 };
 
 exports.handle = (error, req, res, next) => {
