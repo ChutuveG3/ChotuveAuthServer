@@ -7,7 +7,8 @@ const {
   validateToken,
   validateTokenAndLoadUsername,
   authorizationSchema,
-  checkPrivileges
+  checkPrivileges,
+  createRecoveryTokenSchema
 } = require('./middlewares/sessions');
 const {
   createUserSchema,
@@ -18,7 +19,8 @@ const {
   validateUser,
   validateSignUpCredentials,
   validateLoginCredentials,
-  deleteUserSchema
+  deleteUserSchema,
+  checkEmail
 } = require('./middlewares/users');
 const {
   createAdminSchema,
@@ -34,6 +36,7 @@ const {
   deleteServerSchema
 } = require('./middlewares/servers');
 const { validateSchema } = require('./middlewares/params_validator');
+const { createRecoveryToken } = require('./controllers/sessions');
 
 exports.init = app => {
   app.get('/health', healthCheck);
@@ -83,5 +86,10 @@ exports.init = app => {
     '/servers/:name',
     [validateSchema(deleteServerSchema), validateToken, checkPrivileges],
     deleteServer
+  );
+  app.post(
+    '/sessions/password_recovery',
+    [validateSchema(createRecoveryTokenSchema), validateApiKey, checkEmail],
+    createRecoveryToken
   );
 };

@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { getUserFromUsername, getUserFromEmail } = require('../services/users');
-const { invalidParams, passwordMismatch, userMismatchError } = require('../errors');
+const { invalidParams, passwordMismatch, userMismatchError, invalidEmailError } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
 const { apiKeySchema } = require('./servers');
@@ -179,3 +179,14 @@ exports.deleteUserSchema = {
     errorMessage: 'username should be a string'
   }
 };
+
+exports.checkEmail = (req, res, next) =>
+  getUserFromEmail(req.body.email)
+    .then(user => {
+      req.user = user;
+      if (!user.password) {
+        return next(invalidEmailError('User registered with different method'));
+      }
+      return next();
+    })
+    .catch(next);

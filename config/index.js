@@ -47,6 +47,11 @@ const config = {
     },
     firebase: {
       firebaseConfig: process.env.FIREBASE_CONFIG || '{}'
+    },
+    recovery: {
+      senderEmail: process.env.SENDER_EMAIL,
+      senderPassword: process.env.SENDER_PASSWORD,
+      subject: process.env.RECOVERY_SUBJECT || 'Recuperá tu contraseña de Chotuve'
     }
   }
 };
