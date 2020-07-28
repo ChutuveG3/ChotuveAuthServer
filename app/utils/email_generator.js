@@ -81,7 +81,7 @@ a[x-apple-data-detectors] {
       <td class="st-br" valign="top" style="padding:0;Margin:0"> 
        <table class="es-header" cellspacing="0" cellpadding="0" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top"> 
          <tr style="border-collapse:collapse"> 
-          <td style="padding:0;Margin:0;background-image:url(https://htumkn.stripocdn.email/content/guids/CABINET_0185ec3caf0610f4b9817aa1405149a0/images/20841560930387653.jpg);background-color:transparent;background-position:center bottom;background-repeat:no-repeat" bgcolor="transparent" background="https://htumkn.stripocdn.email/content/guids/CABINET_0185ec3caf0610f4b9817aa1405149a0/images/20841560930387653.jpg" align="center"> 
+          <td style="padding:0;Margin:0;background-image:url(https://htumkn.stripocdn.email/content/guids/CABINET_3b5aa0713e0eaf846740a00129c55311/images/55831595626240542.jpg);background-color:transparent;background-position:center bottom;background-repeat:no-repeat" bgcolor="transparent" background="https://htumkn.stripocdn.email/content/guids/CABINET_3b5aa0713e0eaf846740a00129c55311/images/55831595626240542.jpg" align="center"> 
            <!--[if gte mso 9]><v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:1000;height:204px;"><v:fill type="tile" src="https://pics.esputnik.com/repository/home/17278/common/images/1546958148946.jpg" color="#343434" origin="0.5, 0" position="0.5,0" ></v:fill><v:textbox inset="0,0,0,0"><![endif]--> 
            <div> 
             <table class="es-header-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px" cellspacing="0" cellpadding="0" bgcolor="transparent" align="center"> 
@@ -109,7 +109,7 @@ a[x-apple-data-detectors] {
        <table class="es-content" cellspacing="0" cellpadding="0" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%"> 
          <tr style="border-collapse:collapse"> 
           <td style="padding:0;Margin:0;background-color:transparent" bgcolor="transparent" align="center"> 
-           <table class="es-content-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px" cellspacing="0" cellpadding="0" bgcolor="transparent" align="center"> 
+           <table class="es-content-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px" cellspacing="0" cellpadding="0" bgcolor="#c6110d" align="center"> 
              <tr style="border-collapse:collapse"> 
               <td style="Margin:0;padding-bottom:15px;padding-top:30px;padding-left:30px;padding-right:30px;border-radius:10px 10px 0px 0px;background-color:#FFFFFF" bgcolor="#ffffff" align="left"> 
                <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
@@ -124,13 +124,13 @@ a[x-apple-data-detectors] {
                </table></td> 
              </tr> 
              <tr style="border-collapse:collapse"> 
-              <td style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:30px;padding-right:30px;border-radius:0px 0px 10px 10px;background-position:left top;background-color:#FFFFFF" align="left"> 
+              <td style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:30px;padding-right:30px;border-radius:0px 0px 10px 10px;background-color:#FFFFFF" align="left"> 
                <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                  <tr style="border-collapse:collapse"> 
                   <td valign="top" align="center" style="padding:0;Margin:0;width:540px"> 
                    <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                      <tr style="border-collapse:collapse"> 
-                      <td align="left" style="padding:0;Margin:0"> Recupera tu contraseña muy facil ingresando el siguiente código en la app.<br></td> 
+                      <td align="center" style="padding:0;Margin:0">Recupera tu contraseña muy facil ingresando el siguiente código en la app.</td> 
                      </tr> 
                    </table></td> 
                  </tr> 
@@ -143,7 +143,7 @@ a[x-apple-data-detectors] {
                   <td valign="top" align="center" style="padding:0;Margin:0;width:540px"> 
                    <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                      <tr style="border-collapse:collapse"> 
-                      <td align="center" style="padding:0;Margin:0"><h3 style="Margin:0;line-height:45px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:30px;font-style:normal;font-weight:normal;color:#212121">${code}</h3></td> 
+                      <td align="center" style="padding:0;Margin:0"><h3 style="Margin:0;line-height:45px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:30px;font-style:normal;font-weight:normal;color:#0066FF">${code}</h3></td> 
                      </tr> 
                    </table></td> 
                  </tr> 
@@ -155,7 +155,7 @@ a[x-apple-data-detectors] {
        <table class="es-content" cellspacing="0" cellpadding="0" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%"> 
          <tr style="border-collapse:collapse"> 
           <td align="center" style="padding:0;Margin:0"> 
-           <table class="es-content-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px" cellspacing="0" cellpadding="0" bgcolor="transparent" align="center"> 
+           <table class="es-content-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px" cellspacing="0" cellpadding="0" bgcolor="#c6110d" align="center"> 
              <tr style="border-collapse:collapse"> 
               <td style="Margin:0;padding-bottom:10px;padding-top:30px;padding-left:30px;padding-right:30px;border-radius:10px 10px 0px 0px;background-color:#FFFFFF" bgcolor="#ffffff" align="left"> 
                <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
@@ -170,20 +170,20 @@ a[x-apple-data-detectors] {
                </table></td> 
              </tr> 
              <tr style="border-collapse:collapse"> 
-              <td align="left" style="padding:0;Margin:0"> 
+              <td style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:30px;padding-right:30px;border-radius:0px 0px 10px 10px;background-color:#FFFFFF" align="left"> 
                <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                  <tr style="border-collapse:collapse"> 
-                  <td valign="top" align="center" style="padding:0;Margin:0;width:600px"> 
+                  <td valign="top" align="center" style="padding:0;Margin:0;width:540px"> 
                    <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                      <tr style="border-collapse:collapse"> 
-                      <td height="20" bgcolor="#fafafa" align="center" style="padding:0;Margin:0"></td> 
+                      <td align="left" style="padding:0;Margin:0"><br></td> 
                      </tr> 
                    </table></td> 
                  </tr> 
                </table></td> 
              </tr> 
              <tr style="border-collapse:collapse"> 
-              <td style="padding:0;Margin:0;padding-left:20px;padding-right:20px;background-position:left bottom" align="left"> 
+              <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px"> 
                <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                  <tr style="border-collapse:collapse"> 
                   <td valign="top" align="center" style="padding:0;Margin:0;width:560px"> 
