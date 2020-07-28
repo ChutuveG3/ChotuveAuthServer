@@ -19,6 +19,7 @@ const statusCodes = {
   [errors.USER_MISMATCH_ERROR]: 400,
   [errors.SERVER_ALREADY_REGISTERED]: 409,
   [errors.INVALID_API_KEY_ERROR]: 401,
+  [errors.INVALID_RECOVERY_TOKEN]: 409,
   [errors.INVALID_EMAIL_ERROR]: 409
 };
 
