@@ -185,7 +185,7 @@ exports.checkEmail = (req, res, next) =>
     .then(user => {
       req.user = user;
       if (!user.password) {
-        throw invalidEmailError('User registered with different method');
+        return next(invalidEmailError('User registered with different method'));
       }
       return next();
     })
