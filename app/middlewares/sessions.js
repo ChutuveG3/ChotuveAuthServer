@@ -52,12 +52,12 @@ exports.passwordConfigurationSchema = {
     isString: true,
     isLength: { errorMessage: 'Password should have at least 6 characters', options: { min: 6 } },
     optional: false,
-    errorMessage: 'password should be a valid email'
+    errorMessage: 'password should be a string and, at least, 6 characters long'
   },
   recovery_token: {
     in: ['body'],
     isString: true,
     optional: false,
-    errorMessage: 'password should be a valid email'
+    errorMessage: 'recovery token should be a string'
   }
 };

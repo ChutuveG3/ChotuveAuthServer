@@ -15,6 +15,6 @@ exports.modifyPasword = ({ body }, res, next) => {
   const mappedBody = modifyPasswordMapper(body);
   return getUsernameFromRecoveryToken(mappedBody.recoveryToken)
     .then(username => changeUserPassword(username, mappedBody.password))
-    .then(() => res.status(201).end())
+    .then(() => res.status(200).end())
     .catch(next);
 };
