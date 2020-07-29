@@ -37,7 +37,7 @@ const {
   deleteServerSchema
 } = require('./middlewares/servers');
 const { validateSchema } = require('./middlewares/params_validator');
-const { createRecoveryToken, modifyPasword } = require('./controllers/sessions');
+const { createRecoveryToken, modifyPassword } = require('./controllers/sessions');
 
 exports.init = app => {
   app.get('/health', healthCheck);
@@ -97,6 +97,6 @@ exports.init = app => {
   app.put(
     '/sessions/password_configuration',
     [validateSchema(passwordConfigurationSchema), validateApiKey],
-    modifyPasword
+    modifyPassword
   );
 };

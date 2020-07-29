@@ -19,6 +19,10 @@ exports.createRecoveryTokenByUsername = username => {
 
 exports.getUsernameFromRecoveryToken = token =>
   RecoveryToken.findOne({ where: { recoveryToken: token } })
+    .catch(dbError => {
+      error(`Could not get username from recovery token. Error: ${dbError}`);
+      throw databaseError(`Could not get username from recovery token. Error: ${dbError}`);
+    })
     .then(recoveryToken => {
       if (!recoveryToken) {
         error('Recovery token is invalid');
@@ -29,9 +33,10 @@ exports.getUsernameFromRecoveryToken = token =>
         throw invalidRecoveryToken('Recovery token has expired.');
       }
       const { username } = recoveryToken;
-      return RecoveryToken.destroy({ where: { recoveryToken: token } }).then(() => username);
-    })
-    .catch(dbError => {
-      error(`Could not get username from recovery token. Error: ${dbError}`);
-      throw databaseError(`Could not get username from recovery token. Error: ${dbError}`);
+      return RecoveryToken.destroy({ where: { recoveryToken: token } })
+        .catch(dbError => {
+          error(`Failed to destroy recovery token. Error: ${dbError}`);
+          throw databaseError(`Failed to destroy recovery token. Error: ${dbError}`);
+        })
+        .then(() => username);
     });

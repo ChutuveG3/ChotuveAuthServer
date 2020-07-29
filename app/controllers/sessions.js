@@ -11,7 +11,7 @@ exports.createRecoveryToken = ({ body: { email }, user: { userName: username } }
     })
     .catch(next);
 
-exports.modifyPasword = ({ body }, res, next) => {
+exports.modifyPassword = ({ body }, res, next) => {
   const mappedBody = modifyPasswordMapper(body);
   return getUsernameFromRecoveryToken(mappedBody.recoveryToken)
     .then(username => changeUserPassword(username, mappedBody.password))
