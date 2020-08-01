@@ -23,3 +23,17 @@ exports.registerServer = serverData =>
         throw databaseError(`Server could not be created. Error: ${dbError}`);
       });
   });
+
+exports.getServers = () =>
+  Server.findAll({ attributes: ['name', 'created_at', 'api_key'], limit: 50 }).catch(dbError => {
+    error(`Could not get servers. Error: ${dbError}`);
+    throw databaseError(`Could not get servers. Error: ${dbError}`);
+  });
+
+const deleteServerFromName = name =>
+  Server.destroy({ where: { name } }).catch(dbError => {
+    error(`Server could not be delete. Error: ${dbError}`);
+    throw databaseError(`Server could not be deleted. Error: ${dbError}`);
+  });
+
+exports.deleteServer = serverName => deleteServerFromName(serverName);

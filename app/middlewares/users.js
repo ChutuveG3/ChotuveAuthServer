@@ -1,9 +1,10 @@
 const moment = require('moment');
-const { getUserFromUsername } = require('../services/users');
-const { passwordMismatch, userMismatchError } = require('../errors');
+const { getUserFromUsername, getUserFromEmail } = require('../services/users');
+const { invalidParams, passwordMismatch, userMismatchError, invalidEmailError } = require('../errors');
 const { checkPassword } = require('../services/bcrypt');
 const { authorizationSchema } = require('./sessions');
 const { apiKeySchema } = require('./servers');
+const { authenticateFirebaseToken } = require('../services/authentication');
 
 exports.createUserSchema = {
   ...apiKeySchema,
@@ -29,8 +30,14 @@ exports.createUserSchema = {
     in: ['body'],
     isString: true,
     isLength: { errorMessage: 'Password should have at least 6 characters', options: { min: 6 } },
-    optional: false,
+    optional: true,
     errorMessage: 'password should be a string'
+  },
+  firebase_token: {
+    in: ['body'],
+    isJWT: true,
+    optional: true,
+    errorMessage: 'firebase_token should be a jwt'
   },
   user_name: {
     in: ['body'],
@@ -53,26 +60,42 @@ exports.createUserSessionSchema = {
   username: {
     in: ['body'],
     isString: true,
-    optional: false,
+    optional: true,
     errorMessage: 'username should be a string'
   },
   password: {
     in: ['body'],
     isString: true,
     isLength: { errorMessage: 'Password should have at least 6 characters', options: { min: 6 } },
-    optional: false,
+    optional: true,
     errorMessage: 'password should be a string'
+  },
+  firebase_token: {
+    in: ['body'],
+    isJWT: true,
+    optional: true,
+    errorMessage: 'firebase_token should be a jwt'
   }
 };
 
-exports.checkUser = ({ body }, res, next) =>
-  getUserFromUsername(body.username)
+exports.checkUser = ({ body }, res, next) => {
+  if (body.firebaseSignUp) {
+    return authenticateFirebaseToken(body.firebase_token)
+      .then(decodedToken => getUserFromEmail(decodedToken.email))
+      .then(user => {
+        body.username = user.userName;
+        return next();
+      })
+      .catch(next);
+  }
+  return getUserFromUsername(body.username)
     .then(user => checkPassword(body.password, user.password))
     .then(compareResult => {
       if (compareResult) return next();
       throw passwordMismatch('Password does not match with that username');
     })
     .catch(next);
+};
 
 exports.viewProfileSchema = {
   ...apiKeySchema,
@@ -127,3 +150,43 @@ exports.validateUser = ({ username, params: { username: pathUsername } }, res, n
   if (username !== pathUsername) return next(userMismatchError('Token user does not match route user'));
   return next();
 };
+
+exports.validateSignUpCredentials = ({ body }, res, next) => {
+  if (!body.password === !body.firebase_token) {
+    return next(invalidParams('Password or firebase token must be present'));
+  }
+  if (!body.password) body.firebaseSignUp = true;
+  return next();
+};
+
+exports.validateLoginCredentials = ({ body }, res, next) => {
+  if (
+    (body.username || body.password || !body.firebase_token) &&
+    (!body.username || !body.password || body.firebase_token)
+  ) {
+    return next(invalidParams('Username and password, or firebase token must be present'));
+  }
+  if (!body.password) body.firebaseSignUp = true;
+  return next();
+};
+
+exports.deleteUserSchema = {
+  ...authorizationSchema,
+  username: {
+    in: ['params'],
+    isString: true,
+    optional: false,
+    errorMessage: 'username should be a string'
+  }
+};
+
+exports.checkEmail = (req, res, next) =>
+  getUserFromEmail(req.body.email)
+    .then(user => {
+      req.user = user;
+      if (!user.password) {
+        return next(invalidEmailError('User registered with different method'));
+      }
+      return next();
+    })
+    .catch(next);

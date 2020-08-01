@@ -1,13 +1,19 @@
 const { info } = require('../logger');
-const { createUser, login, getUserFromUsername, updateProfile } = require('../services/users');
+const {
+  checkMethod,
+  createUser,
+  login,
+  getUserFromUsername,
+  updateProfile,
+  deleteUser
+} = require('../services/users');
 const { createUserMapper, updateUserMapper } = require('../mappers/users');
-const { encryptPassword } = require('../services/bcrypt');
 const { getCurrentUserSerializer } = require('../serializers/users');
 
 exports.signUp = ({ body }, res, next) => {
-  info(`Creating user with email: ${body.email}`);
+  info(`Creating user with username: ${body.user_name}`);
   const userData = createUserMapper(body);
-  return encryptPassword(userData.password)
+  return checkMethod(body)
     .then(password => createUser({ ...userData, password }))
     .then(() => res.status(201).end())
     .catch(next);
@@ -16,7 +22,7 @@ exports.signUp = ({ body }, res, next) => {
 exports.login = ({ body }, res, next) => {
   info(`Login user with username: ${body.username}`);
   return login(body.username)
-    .then(token => res.status(200).send({ token }))
+    .then(userInfo => res.status(200).send(userInfo))
     .catch(next);
 };
 
@@ -37,6 +43,13 @@ exports.updateProfile = (req, res, next) => {
   info(`Updating profile for user: ${req.username}`);
   return getUserFromUsername(req.username)
     .then(currentUser => updateProfile(currentUser, userData))
+    .then(() => res.status(200).end())
+    .catch(next);
+};
+
+exports.deleteUser = ({ params: { username } }, res, next) => {
+  info(`Deleting user with username: ${username}`);
+  return deleteUser(username)
     .then(() => res.status(200).end())
     .catch(next);
 };

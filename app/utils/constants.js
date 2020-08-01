@@ -1,0 +1,1 @@
+exports.RECOVERY_TOKEN_LENGTH = 6;

@@ -9,6 +9,8 @@ const {
   jwtError
 } = require('../errors');
 const { generateToken } = require('../services/jwt');
+const { encryptPassword } = require('../services/bcrypt');
+const { authenticateFirebaseToken } = require('../services/authentication');
 
 exports.createUser = userData => {
   info(`Creating user in db with email: ${userData.email}`);
@@ -36,7 +38,7 @@ exports.login = username => {
   info(`Getting session token for user with username: ${username}`);
   const token = generateToken({ data: username, privilege: false });
   if (!token) throw jwtError('Token could not be created');
-  return Promise.resolve(token);
+  return Promise.resolve({ username, token });
 };
 
 exports.getUserFromEmail = email => {
@@ -81,3 +83,31 @@ exports.updateProfile = (currentUser, userData) =>
         throw databaseError(`Could not update user. Error: ${dbError}`);
       });
     });
+
+exports.checkMethod = body => {
+  const { password } = body;
+  if (body.firebaseSignUp) {
+    return authenticateFirebaseToken(body.firebase_token).then(() => password);
+  }
+  return encryptPassword(password);
+};
+
+const deleteUserFromUsername = userName =>
+  User.destroy({ where: { userName } }).catch(dbError => {
+    error(`Could not delete user. Error: ${dbError}`);
+    throw databaseError(`Could not delete user. Error: ${dbError}`);
+  });
+
+exports.deleteUser = username => deleteUserFromUsername(username);
+
+exports.changeUserPassword = (username, password) =>
+  exports.getUserFromUsername(username).then(user =>
+    encryptPassword(password)
+      .then(encryptedPassword =>
+        user.update({ password: encryptedPassword }, { where: { userName: username } })
+      )
+      .catch(dbError => {
+        error(`Could not update user. Error: ${dbError}`);
+        throw databaseError(`Could not update user. Error: ${dbError}`);
+      })
+  );

@@ -1,15 +1,17 @@
 const { Server } = require('../models');
 const { info, error } = require('../logger');
 const { databaseError, invalidApiKeyError } = require('../errors');
-// const { authorizationSchema } = require('./sessions');
 
-exports.registerServerSchema = {
+const authorizationSchema = {
   authorization: {
     in: ['headers'],
     isString: true,
-    optional: false,
     errorMessage: 'authorization should be a string and be present in headers'
-  },
+  }
+};
+
+exports.registerServerSchema = {
+  ...authorizationSchema,
   server: {
     in: ['body'],
     isString: true,
@@ -39,4 +41,18 @@ exports.validateApiKey = ({ headers: { x_api_key: apiKey } }, res, next) => {
       return next();
     })
     .catch(next);
+};
+
+exports.getServersSchema = {
+  ...authorizationSchema
+};
+
+exports.deleteServerSchema = {
+  ...authorizationSchema,
+  name: {
+    in: ['params'],
+    isString: true,
+    optional: false,
+    errorMessage: 'name should be a string'
+  }
 };

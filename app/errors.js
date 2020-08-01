@@ -50,3 +50,9 @@ exports.serverAlreadyRegistered = message => internalError(message, exports.SERV
 
 exports.INVALID_API_KEY_ERROR = 'invalid_api_key_error';
 exports.invalidApiKeyError = message => internalError(message, exports.INVALID_API_KEY_ERROR);
+
+exports.INVALID_RECOVERY_TOKEN = 'invalid_recovery_token';
+exports.invalidRecoveryToken = message => internalError(message, exports.INVALID_RECOVERY_TOKEN);
+
+exports.INVALID_EMAIL_ERROR = 'invalid_email_error';
+exports.invalidEmailError = message => internalError(message, exports.INVALID_EMAIL_ERROR);
